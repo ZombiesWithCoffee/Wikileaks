@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 
 namespace WikiLeaks {
     /// <summary>
@@ -8,8 +9,6 @@ namespace WikiLeaks {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-
-            ViewModel.WebBrowser = WebBrowser;
         }
 
         public MainWindowViewModel ViewModel
@@ -25,6 +24,13 @@ namespace WikiLeaks {
             if (attachment != null){
                 var url = $@"https://wikileaks.org/{attachment.Href}";
                 System.Diagnostics.Process.Start(url);
+            }
+        }
+
+        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
+            var webBrowser = sender as WebBrowser;
+            if (webBrowser == null) {
+                return;
             }
         }
     }

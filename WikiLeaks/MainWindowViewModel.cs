@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -64,17 +65,24 @@ namespace WikiLeaks {
 
         private string _htmlString;
 
-        public System.Windows.Controls.WebBrowser WebBrowser { get; set; }
-
         public ICommand UpdateCommand => new RelayCommand(RefreshPage);
 
         void RefreshPage(){
+
+            Attachments.Clear();
+            HtmlString = "&nbsp;";
+
             var web = new HtmlWeb();
             var document = web.Load(Url);
 
-            var node = document.DocumentNode.SelectNodes("//div[@id='content']").First();
+            var node = document.DocumentNode.SelectSingleNode("//div[@id='content']");
 
-            var html = new StringBuilder($"<html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'></head><body>{node.InnerHtml}</body></html>");
+            if (node == null)
+                return;
+
+            var text = node.InnerHtml.TrimStart('\n', '\t');
+
+            var html = new StringBuilder($@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>{text}");
 
             FixHtml(ref html);
             HighlightNames(ref html);
@@ -82,8 +90,6 @@ namespace WikiLeaks {
             HtmlString = html.ToString();
 
             // Get attachments
-
-            Attachments.Clear();
 
             var attachmentNode = document.DocumentNode.SelectNodes("//div[@id='attachments']//a");
 
@@ -115,7 +121,7 @@ namespace WikiLeaks {
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
 
         void FixHtml(ref StringBuilder html){
-            html = html.Replace("\t", "   ");
+            html = html.Replace("\t", "");
             html = html.Replace("\n", @"<br/>");
             html = html.Replace("&lt;", "<");
             html = html.Replace("&gt;", ">");
