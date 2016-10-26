@@ -33,26 +33,11 @@ namespace WikiLeaks {
 
                 RaisePropertyChanged();
                 RefreshPage(); 
+
                 // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(nameof(Url));
             }
         }
-
-        public string Repository
-        {
-            get { return _repository; }
-            set { Set(ref _repository, value); }
-        }
-
-        string _repository;
-
-        public string Action
-        {
-            get { return _action; }
-            set { Set(ref _action, value); }
-        }
-
-        string _action;
 
         public string HtmlString
         {
@@ -60,7 +45,7 @@ namespace WikiLeaks {
             set { Set(ref _htmlString, value); }
         }
 
-        private string _htmlString;
+        string _htmlString;
 
         public ICommand UpdateCommand => new RelayCommand(RefreshPage);
 
@@ -77,7 +62,12 @@ namespace WikiLeaks {
             if (node == null)
                 return;
 
-            var text = node.InnerHtml.TrimStart('\n', '\t');
+            var text = @"<div id='content'>" + node.InnerHtml.TrimStart('\n', '\t');
+
+            text = text.Replace("\n\t\t\t\t\n\t\t\t\t<header>", "<header>");
+            text = text.Replace("</h2>\n\t\t\t\t", "</h2>");
+            text = text.Replace("</header>\n\n\n\n\t\t\t\t", "</header>");
+            text = text.Replace("sh\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t", "sh\">");
 
             var html = new StringBuilder($@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>{text}");
 
@@ -113,6 +103,7 @@ namespace WikiLeaks {
             }
         }
 
+        readonly Regex _afterHeaderRegex = new Regex("</header>(.+)<div");
         readonly Regex _attachmentRegex = new Regex("</span>(?<FileName>.+)<br><small>(?<FileSize>.+)<br>(?<ImageType>.+)</small>");
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
