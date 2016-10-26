@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -82,7 +79,7 @@ namespace WikiLeaks {
 
             var text = node.InnerHtml.TrimStart('\n', '\t');
 
-            var html = new StringBuilder($@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>{text}");
+            var html = new StringBuilder($@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>{text}");
 
             FixHtml(ref html);
             HighlightNames(ref html);
@@ -128,24 +125,39 @@ namespace WikiLeaks {
         }
 
         void HighlightNames(ref StringBuilder html) {
-
-            html = html.Replace("WJC",     HighlightColor("WJC"));
-            html = html.Replace("HRC",     HighlightColor("HRC"));
-            html = html.Replace("Obama", HighlightColor("Obama"));
-            html = html.Replace("Hillary", HighlightColor("Hillary"));
-            html = html.Replace("Clinton", HighlightColor("Clinton"));
-            html = html.Replace("Mills", HighlightColor("Mills"));
-            html = html.Replace("podesta", HighlightColor("podesta"));
-            html = html.Replace("Podesta", HighlightColor("Podesta"));
-            html = html.Replace("Soros", HighlightColor("Soros", "FF0000"));
-            html = html.Replace("SOROS", HighlightColor("SOROS", "FF0000"));
-
-            html = html.Replace("Pagliano", HighlightColor("Pagliano", "FF0000"));
-            html = html.Replace("PAGLIANO", HighlightColor("PAGLIANO", "FF0000"));
-           
+            HighlightName(ref html, "WJC");
+            HighlightName(ref html, "HRC");
+            HighlightName(ref html, "KSA");
+            HighlightName(ref html, "CVC");
+            HighlightName(ref html, "Obama");
+            HighlightName(ref html, "Hillary");
+            HighlightName(ref html, "Clinton");
+            HighlightName(ref html, "Mills");
+            HighlightName(ref html, "Podesta");
+            HighlightName(ref html, "Soros", "FF0000");
+            HighlightName(ref html, "Turi");
+            HighlightName(ref html, "Qatar");
+            HighlightName(ref html, "Striker");
+            HighlightName(ref html, "Saudi");
+            HighlightName(ref html, "Foundation");
+            HighlightName(ref html, "Pagliano");
+            HighlightName(ref html, "Login");
+            HighlightName(ref html, "Password");
+            HighlightName(ref html, "Username");
+            HighlightName(ref html, "Health");
+            HighlightName(ref html, "Emergency");
+            HighlightName(ref html, "Urgent");
+            HighlightName(ref html, "Potus");
         }
 
-        string HighlightColor(string text, string color = "408FBF") {
+        void HighlightName(ref StringBuilder html, string name, string color = "408FBF"){
+
+            html = html.Replace(name, HighlightName(name, color));
+            html = html.Replace(name.ToUpper(), HighlightName(name.ToUpper(), color));
+            html = html.Replace(name.ToLower(), HighlightName(name.ToLower(), color));
+        }
+
+        string HighlightName(string text, string color) {
             return $@"<strong style=""color:#{color}"">{text}</strong>";
         }
 

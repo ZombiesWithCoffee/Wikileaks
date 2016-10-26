@@ -19,37 +19,8 @@ namespace WikiLeaks{
         }
 
         static void OnHtmlChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
-            WebBrowser webBrowser = dependencyObject as WebBrowser;
-            if (webBrowser != null)
-                webBrowser.NavigateToString(e.NewValue as string ?? "&nbsp;");
-        }
-
-        public static readonly DependencyProperty BindableSourceProperty =
-            DependencyProperty.RegisterAttached("BindableSource", typeof(object), typeof(WebBrowserBehaviors),
-                new UIPropertyMetadata(null, BindableSourcePropertyChanged));
-
-        public static object GetBindableSource(DependencyObject obj){
-            return (string) obj.GetValue(BindableSourceProperty);
-        }
-
-        public static void SetBindableSource(DependencyObject obj, object value){
-            obj.SetValue(BindableSourceProperty, value);
-        }
-
-        public static void BindableSourcePropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e){
-            var browser = o as WebBrowser;
-
-            if (browser == null)
-                return;
-
-            var uriString = e.NewValue as string;
-
-            if (uriString != null){
-                browser.Source = string.IsNullOrWhiteSpace(uriString) ? null : new Uri(uriString); 
-                return;
-            }
-
-            browser.Source = e.NewValue as Uri;
+            var webBrowser = dependencyObject as WebBrowser;
+            webBrowser?.NavigateToString(e.NewValue as string ?? "&nbsp;");
         }
     }
 }

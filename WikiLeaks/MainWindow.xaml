@@ -13,25 +13,30 @@
         Top="{extensions:SettingBinding Top}"
         WindowState="{extensions:SettingBinding WindowState}"        
         Title="WikiLeaks Viewer">
+    
     <Window.Resources>
         <Image x:Key="Next" Source="Resources/Button Next.png" />
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
     </Window.Resources>
+    
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
+        
         <Border BorderThickness="2" CornerRadius="3" BorderBrush="Black">
             <WebBrowser x:Name="WebBrowser" local:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
         </Border>
-        <ListBox x:Name="FileList" Grid.Row="1" ItemsSource="{Binding Attachments}" >
+        
+        <ListBox Grid.Row="1" ItemsSource="{Binding Attachments}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
@@ -49,6 +54,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
         <Grid Grid.Row="2" Background="Azure" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
