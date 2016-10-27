@@ -44,7 +44,7 @@ namespace WikiLeaks {
 
         public string RepairHtml(string text){
 
-            var startPos = text.IndexOf(@"Content-Type: text/html; charset=UTF-8", StringComparison.Ordinal);
+            var startPos = text.IndexOf(@"Content-Type: text/html", StringComparison.Ordinal);
 
             if (startPos == -1)
                 return text;
@@ -112,6 +112,9 @@ namespace WikiLeaks {
 
                 case "q20140121._domainkey.comcast.net":
                     return PublicKeyFactory.CreateKey(Convert.FromBase64String(Resources.ComcastQ20140121));
+
+                case "dccckey._domainkey.dccc.org":
+                    return PublicKeyFactory.CreateKey(Convert.FromBase64String(Resources.DcccKey));
 
                 default:
                     return null;

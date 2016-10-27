@@ -90,6 +90,15 @@ namespace WikiLeaks.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCy+xh45ea5Iiwm1T7TzpuA3IRe4imyJC5w+S1yOZjCQglI6KMCIdp5RHe03L44E9AUizK3VPcGHZpVCUn2h3QxCy/7/NlyGpQziRYHfgAjwyekZhF9gzCC4RbRBV2jc5L7fU/glUH9rY7XHXSLQLDfibO0kuGElzJU+Iu2lBWUeQIDAQAB.
+        /// </summary>
+        internal static string DcccKey {
+            get {
+                return ResourceManager.GetString("DcccKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Kd87/UeJjenpabgbFwh+eBCsSTrqmwIYYvywlbhbqoo2DymndFkbjOVIPIldNs/m40KF+yzMn1skyoxcTUGCQs8g3FgD2Ap3ZB5DekAo5wMmk4wimDO+U8QzI3SD07y2+07wlNWwIt8svnxgdxGkVbbhzY8i+RQ9DpSVpPbF7ykQxtKXkv/ahW3KjViiAH+ghvvIhkx4xYSIc9oSwVmAl5OctMEeWUwg8Istjqz8BZeTWbf41fbNhte7Y+YqZOwq1Sd0DbvYAD9NOZK9vlfuac0598HY+vtSBczUiKERHv1yRbcaQtZFh5wtiRrN04BLUTD21MycBX5jYchHjPY/wIDAQAB.
         /// </summary>
         internal static string Gmail20120113 {

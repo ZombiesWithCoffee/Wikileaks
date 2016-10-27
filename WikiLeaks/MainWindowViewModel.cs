@@ -60,16 +60,23 @@ namespace WikiLeaks {
 
         void RefreshPage(){
 
-            Attachments.Clear();
-            HtmlString = "&nbsp;";
+            Mouse.OverrideCursor = Cursors.Wait;
 
-            var web = new HtmlWeb();
-            var document = web.Load(Url);
+            try{
+                Attachments.Clear();
+                HtmlString = "&nbsp;";
 
-            GetHtml(document);
-            GetAttachments(document);
+                var web = new HtmlWeb();
+                var document = web.Load(Url);
 
-            Validated = ValidateSource(document);
+                GetHtml(document);
+                GetAttachments(document);
+
+                Validated = ValidateSource(document);
+            }
+            finally{
+                Mouse.OverrideCursor = Cursors.Arrow;
+            }
         }
 
         void GetHtml(HtmlDocument document){
