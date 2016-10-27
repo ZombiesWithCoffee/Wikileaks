@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -47,6 +48,14 @@ namespace WikiLeaks {
 
         string _htmlString;
 
+        public bool? Validated
+        {
+            get { return _validated; }
+            set { Set(ref _validated, value); }
+        }
+
+        private bool? _validated;
+
         public ICommand UpdateCommand => new RelayCommand(RefreshPage);
 
         void RefreshPage(){
@@ -57,34 +66,45 @@ namespace WikiLeaks {
             var web = new HtmlWeb();
             var document = web.Load(Url);
 
+            GetHtml(document);
+            GetAttachments(document);
+
+            Validated = ValidateSource(document);
+        }
+
+        void GetHtml(HtmlDocument document){
+
             var node = document.DocumentNode.SelectSingleNode("//div[@id='content']");
 
             if (node == null)
                 return;
 
-            var text = @"<div id='content'>" + node.InnerHtml.TrimStart('\n', '\t');
+            var innerHtml = HttpUtility.HtmlDecode(node.InnerHtml);
+
+            var text = @"<div id='content'>" + innerHtml.TrimStart('\n', '\t');
 
             text = text.Replace("\n\t\t\t\t\n\t\t\t\t<header>", "<header>");
             text = text.Replace("</h2>\n\t\t\t\t", "</h2>");
             text = text.Replace("</header>\n\n\n\n\t\t\t\t", "</header>");
             text = text.Replace("sh\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t", "sh\">");
 
-            var html = new StringBuilder($@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>{text}");
+            var html =
+                new StringBuilder(
+                    $@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>{text}");
 
             FixHtml(ref html);
             HighlightNames(ref html);
 
             HtmlString = html.ToString();
+        }
 
-            // Get attachments
-
+        void GetAttachments(HtmlDocument document){
             var attachmentNode = document.DocumentNode.SelectNodes("//div[@id='attachments']//a");
 
             if (attachmentNode == null)
                 return;
 
             foreach (var attachment in document.DocumentNode.SelectNodes("//div[@id='attachments']//a")){
-
                 var match = _attachmentRegex.Match(attachment.InnerHtml);
 
                 if (match.Success){
@@ -103,6 +123,23 @@ namespace WikiLeaks {
             }
         }
 
+        /// <summary>
+        /// Source validation
+        /// </summary>
+        /// <param name="document"></param>
+
+        bool? ValidateSource(HtmlDocument document){
+
+            var source = document.DocumentNode.SelectSingleNode("//div[@id='source']//pre");
+
+            if (source == null)
+                return null;
+
+            var text = HttpUtility.HtmlDecode(source.InnerHtml);
+
+            return new EmailValidation().ValidateSource(text);
+        }
+
         readonly Regex _afterHeaderRegex = new Regex("</header>(.+)<div");
         readonly Regex _attachmentRegex = new Regex("</span>(?<FileName>.+)<br><small>(?<FileSize>.+)<br>(?<ImageType>.+)</small>");
 
@@ -111,8 +148,6 @@ namespace WikiLeaks {
         void FixHtml(ref StringBuilder html){
             html = html.Replace("\t", "");
             html = html.Replace("\n", @"<br/>");
-            html = html.Replace("&lt;", "<");
-            html = html.Replace("&gt;", ">");
         }
 
         void HighlightNames(ref StringBuilder html) {

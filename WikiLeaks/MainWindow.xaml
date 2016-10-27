@@ -19,6 +19,7 @@
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
+        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
     </Window.Resources>
     
     <Window.DataContext>
@@ -65,7 +66,7 @@
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center"/>
+            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding Validated, Converter={StaticResource BoolToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
             <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" Padding="2" Margin="2"/>
             <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" Padding="2" Margin="2"/>
