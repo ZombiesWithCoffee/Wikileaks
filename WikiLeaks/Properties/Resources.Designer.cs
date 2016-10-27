@@ -61,6 +61,15 @@ namespace WikiLeaks.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDE1rpd/RcC3QhMtKTa2waVqzI9+JoItq0qxNPEywBaN7x64YCwoq010CDGKo17bLvqN8rMKI4gUxiHSV8oFFkDXsnHlyhNBKMzy5DZKcrRh7rS/4RnWX+eLl/HqJ3S6nmgAyDqYOk5vPxp0D/nhKUNoePdDw9mftStozxcTfux6QIDAQAB.
+        /// </summary>
+        internal static string BlueStateDigital {
+            get {
+                return ResourceManager.GetString("BlueStateDigital", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Button_Next {
@@ -77,6 +86,25 @@ namespace WikiLeaks.Properties {
             get {
                 object obj = ResourceManager.GetObject("Button_Previous", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Calendar {
+            get {
+                object obj = ResourceManager.GetObject("Calendar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPQbUA/GI9q/nSI59sTfgzf8ZFlgdOKZ8IPOmPEUhgbAeqgv02OMiH4WEV5sOXURfUdD+CJ4usxumlo7tseSr3Zvpr98XjDjGnaA4NTG4iRmk7cedcYvv2fbU4iXACS6YI08suYiOuB5ITTi8LTrHHr/tnTia8se7AO+w3b2KvmQIDAQAB.
+        /// </summary>
+        internal static string CcSend1000073432 {
+            get {
+                return ResourceManager.GetString("CcSend1000073432", resourceCulture);
             }
         }
         
@@ -108,11 +136,40 @@ namespace WikiLeaks.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5kQ31/aZDreQqR9/ikNe00ywRvZBFHod6dja+Xdui4C1y8SVrkUMQQLOO49UA+ROm4evxAru5nGPbSl7WJzyGLl0z8Lt+qjGSa3+qxf4ZhDQ2chLS+2g0Nnzi6coUpF8rjuvuWHWXnzpvLxE5TQdfgp8yziNWUqCXG/LBbgeGqCIpaQjlaA6GtPbJbh0jl1NcQLqrOmc2Kj2urNJAW+UPehVGzHal3bCtnNz55sajugRps1rO8lYdPamQjLEJhwaEg6/E50m58BVVdK3KHvQzrQBwfvm99mHLALJqkFHnhyKARLQf8tQMy8wVtIwY2vOUwwJxt3e0KcIX6NtnjSSwIDAQAB.
+        /// </summary>
+        internal static string Google20120113 {
+            get {
+                return ResourceManager.GetString("Google20120113", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJdAYdE2z61YpUMFqFTFJqlFomm7C4Kk97nzJmR4YZuJ8SUy9CF35UVPQzh3EMLhP+yOqEl29Ax2hA/h7vayr/f/a19x2jrFCwxVry+nACH1FVmIwV3b5FCNEkNeAIqjbY8K9PeTmpqNhWDbvXeKgFbIDwhWq0HP2PbySkOe4tTQIDAQAB.
         /// </summary>
         internal static string HillaryClinton {
             get {
                 return ResourceManager.GetString("HillaryClinton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Microsoft_Word {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_Word", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PDF {
+            get {
+                object obj = ResourceManager.GetObject("PDF", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

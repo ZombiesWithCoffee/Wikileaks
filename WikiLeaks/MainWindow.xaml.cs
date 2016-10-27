@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using mshtml;
@@ -21,10 +22,13 @@ namespace WikiLeaks {
             var button = sender as Button;
             var attachment = button?.DataContext as Attachment;
 
-            if (attachment != null){
-                var url = $@"https://wikileaks.org/{attachment.Href}";
-                System.Diagnostics.Process.Start(url);
-            }
+            if (attachment == null)
+                return;
+
+            var tempFileName = Path.Combine(Path.GetTempPath(), Path.ChangeExtension(attachment.FileName, attachment.Extension));
+            File.WriteAllBytes(tempFileName, attachment.Data);
+
+            System.Diagnostics.Process.Start(tempFileName);
         }
 
         private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){

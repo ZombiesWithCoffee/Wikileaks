@@ -1,20 +1,57 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using Flurl;
+using Flurl.Http;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using HtmlAgilityPack;
+using MimeKit;
 using WikiLeaks.Properties;
 
 namespace WikiLeaks {
 
-    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
+    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel {
 
-        public MainWindowViewModel(){
+        public MainWindowViewModel() {
             DocumentNo = Settings.Default.DocumentNo;
         }
+
+        public InternetAddressList From
+        {
+            get { return _from; }
+            set { Set(ref _from, value); }
+        }
+
+        InternetAddressList _from;
+
+        public InternetAddressList To
+        {
+            get { return _to; }
+            set { Set(ref _to, value); }
+        }
+
+        InternetAddressList _to;
+
+        public InternetAddressList Cc
+        {
+            get { return _cc; }
+            set { Set(ref _cc, value); }
+        }
+
+        InternetAddressList _cc;
+
+        public string Subject
+        {
+            get { return _subject; }
+            set { Set(ref _subject, value); }
+        }
+
+        string _subject;
 
         public string Website
         {
@@ -33,10 +70,10 @@ namespace WikiLeaks {
                 Settings.Default.Save();
 
                 RaisePropertyChanged();
-                RefreshPage(); 
-
                 // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(nameof(Url));
+
+                RefreshPage();
             }
         }
 
@@ -56,106 +93,144 @@ namespace WikiLeaks {
 
         private bool? _validated;
 
-        public ICommand UpdateCommand => new RelayCommand(RefreshPage);
-
-        void RefreshPage(){
+        async Task RefreshPage() {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try{
+            try {
                 Attachments.Clear();
                 HtmlString = "&nbsp;";
 
-                var web = new HtmlWeb();
-                var document = web.Load(Url);
+                MimeMessage message;
 
-                GetHtml(document);
-                GetAttachments(document);
+                using (var stream = await "https://wikileaks.org"
+                    .AppendPathSegment("podesta-emails/get")
+                    .AppendPathSegment(DocumentNo)
+                    .GetStreamAsync()) {
 
-                Validated = ValidateSource(document);
+                    message = MimeMessage.Load(stream);
+                }
+
+                From = message.From;
+                To = message.To;
+                Cc = message.Cc;
+                Subject = message.Subject;
+
+                HtmlString = message.HtmlBody;
+
+                if (string.IsNullOrEmpty(HtmlString)){
+
+                    var text = message.TextBody;
+                    text = text.Replace("\r\n", "<br/>");
+
+                    HtmlString = text;
+                }
+                else{
+                    HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + HtmlString;
+                }
+
+                // HighlightNames(ref html);
+                GetAttachments(message);
+
+                Validated = new EmailValidation().ValidateSource(message);
             }
-            finally{
+            catch (Exception ex) {
+                int j = 0;
+            }
+            finally {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
-        void GetHtml(HtmlDocument document){
+        void GetAttachments(MimeMessage message) {
 
-            var node = document.DocumentNode.SelectSingleNode("//div[@id='content']");
+            foreach (var mimeEntity in message.Attachments) {
 
-            if (node == null)
-                return;
+                using (var memory = new MemoryStream()){
+                    var mimePart = mimeEntity as MimePart;
 
-            var innerHtml = HttpUtility.HtmlDecode(node.InnerHtml);
+                    if (mimePart != null){
+                        mimePart.ContentObject.DecodeTo(memory);
 
-            var text = @"<div id='content'>" + innerHtml.TrimStart('\n', '\t');
+                        var attachment = new Attachment{
+                            Data = memory.GetBuffer(),
+                            FileName = mimePart.FileName
+                        };
 
-            text = text.Replace("\n\t\t\t\t\n\t\t\t\t<header>", "<header>");
-            text = text.Replace("</h2>\n\t\t\t\t", "</h2>");
-            text = text.Replace("</header>\n\n\n\n\t\t\t\t", "</header>");
-            text = text.Replace("sh\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t", "sh\">");
+                        switch (mimePart.ContentType.MimeType){
 
-            var html =
-                new StringBuilder(
-                    $@"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>{text}");
+                            case "image/png":{
+                                var imageSource = new BitmapImage();
+                                imageSource.BeginInit();
+                                imageSource.StreamSource = memory;
+                                imageSource.EndInit();
 
-            FixHtml(ref html);
-            HighlightNames(ref html);
+                                // Assign the Source property of your image
+                                attachment.ImageSource = imageSource;
+                                attachment.Extension = "png";
+                                break;
+                            }
 
-            HtmlString = html.ToString();
-        }
+                            case "image/jpeg":{
 
-        void GetAttachments(HtmlDocument document){
-            var attachmentNode = document.DocumentNode.SelectNodes("//div[@id='attachments']//a");
+                                var image = Image.FromStream(memory);
+                                var bitmap = new Bitmap(image);
 
-            if (attachmentNode == null)
-                return;
+                                attachment.ImageSource = BitmapToImageSource(bitmap);
+                                attachment.Extension = "jpg";
+                                break;
+                            }
 
-            foreach (var attachment in document.DocumentNode.SelectNodes("//div[@id='attachments']//a")){
-                var match = _attachmentRegex.Match(attachment.InnerHtml);
+                            case "application/ics":
+                                attachment.ImageSource = BitmapToImageSource(Resources.Calendar);
+                                attachment.Extension = "ics";
+                                break;
 
-                if (match.Success){
-                    Attachments.Add(new Attachment{
-                        FileName = match.Groups["FileName"].Value,
-                        FileSize = match.Groups["FileSize"].Value,
-                        Href = attachment.Attributes["href"].Value,
-                        ImageType = match.Groups["ImageType"].Value
-                    });
-                }
-                else{
-                    Attachments.Add(new Attachment{
-                        Href = attachment.Attributes["href"].Value
-                    });
+                            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                                attachment.ImageSource = BitmapToImageSource(Resources.Microsoft_Word);
+                                attachment.Extension = "docx";
+                                break;
+
+                            case "application/pdf":
+                                attachment.FileName = mimePart.FileName;
+                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
+                                attachment.Extension = "pdf";
+                                break;
+
+                            case "APPLICATION/octet-stream":
+                                attachment.FileName = mimePart.FileName;
+                                attachment.Extension = "dat";
+                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
+                                break;
+
+                            default:
+                                attachment.FileName = mimePart.FileName;
+                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
+                                break;
+                        }
+
+                        Attachments.Add(attachment);
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Source validation
-        /// </summary>
-        /// <param name="document"></param>
+        BitmapImage BitmapToImageSource(Bitmap bitmap) {
+            using (var memory = new MemoryStream()) {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
 
-        bool? ValidateSource(HtmlDocument document){
+                var bitmapimage = new BitmapImage();
+                bitmapimage.BeginInit();
+                bitmapimage.StreamSource = memory;
+                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapimage.EndInit();
 
-            var source = document.DocumentNode.SelectSingleNode("//div[@id='source']//pre");
-
-            if (source == null)
-                return null;
-
-            var text = HttpUtility.HtmlDecode(source.InnerHtml);
-
-            return new EmailValidation().ValidateSource(text);
+                return bitmapimage;
+            }
         }
-
-        readonly Regex _afterHeaderRegex = new Regex("</header>(.+)<div");
-        readonly Regex _attachmentRegex = new Regex("</span>(?<FileName>.+)<br><small>(?<FileSize>.+)<br>(?<ImageType>.+)</small>");
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
-
-        void FixHtml(ref StringBuilder html){
-            html = html.Replace("\t", "");
-            html = html.Replace("\n", @"<br/>");
-        }
 
         void HighlightNames(ref StringBuilder html) {
             HighlightName(ref html, "WJC");
@@ -183,7 +258,7 @@ namespace WikiLeaks {
             HighlightName(ref html, "Potus");
         }
 
-        void HighlightName(ref StringBuilder html, string name, string color = "408FBF"){
+        void HighlightName(ref StringBuilder html, string name, string color = "408FBF") {
 
             html = html.Replace(name, HighlightName(name, color));
             html = html.Replace(name.ToUpper(), HighlightName(name.ToUpper(), color));
@@ -194,19 +269,25 @@ namespace WikiLeaks {
             return $@"<strong style=""color:#{color}"">{text}</strong>";
         }
 
+        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
         public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
 
-        public ICommand NextCommand => new RelayCommand(() => {
+        public ICommand NextCommand => new RelayCommand(() =>
+        {
             DocumentNo++;
         });
 
-        public ICommand PreviousCommand => new RelayCommand(() => {
+        public ICommand PreviousCommand => new RelayCommand(() =>
+        {
             DocumentNo--;
         });
 
-        public ICommand RefreshCommand => new RelayCommand(RefreshPage);
+        public ICommand UpdateCommand => new RelayCommand(async () => await RefreshPage());
 
-        public ICommand WikileaksCommand => new RelayCommand(() => {
+        public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPage());
+
+        public ICommand WikileaksCommand => new RelayCommand(() =>
+        {
             System.Diagnostics.Process.Start(Url);
         });
     }

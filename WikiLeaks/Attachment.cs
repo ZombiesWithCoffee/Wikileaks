@@ -1,8 +1,10 @@
-﻿namespace WikiLeaks {
+﻿using System.Windows.Media;
+
+namespace WikiLeaks {
     public class Attachment{
-        public string Href { get; set; }
         public string FileName { get; set; }
-        public string FileSize { get; set; }
-        public string ImageType { get; set; }
+        public byte[] Data { get; set; }
+        public string Extension { get; set; }
+        public ImageSource ImageSource { get; set; }
     }
 }

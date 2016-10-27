@@ -28,35 +28,60 @@
     
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
         
-        <Border BorderThickness="2" CornerRadius="3" BorderBrush="Black">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <Label Content="From:" FontSize="14" FontWeight="Bold"/>
+            <Label Content="{Binding From}" Grid.Row="0" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
+            <Label Content="To:" Grid.Row="1" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
+            <Label Content="{Binding To}" Grid.Row="1" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
+            <Label Content="CC:" Grid.Row="2" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
+            <Label Content="{Binding Cc}" Grid.Row="2" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
+            <Label Content="Subject:" Grid.Row="3" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
+            <Label Content="{Binding Subject}" Grid.Row="3" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
+        </Grid>
+
+        <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BorderBrush="Black">
             <WebBrowser x:Name="WebBrowser" local:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
         </Border>
         
-        <ListBox Grid.Row="1" ItemsSource="{Binding Attachments}" >
+        <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+            
             <ListBox.ItemTemplate>
-                <DataTemplate > 
-                    <Button Click="Attachment_Click">
-                        <StackPanel>
-                            <Label Content="{Binding Path=FileName}" HorizontalAlignment="Center"/>
-                            <Label Content="{Binding Path=FileSize}" HorizontalAlignment="Center"/>
-                            <Label Content="{Binding Path=ImageType}" HorizontalAlignment="Center"/>
-                        </StackPanel>
+                <DataTemplate>
+                    <Button MaxHeight="128" Click="Attachment_Click">
+                        <Button.Content>
+                            <Grid>
+                                <Label Content="{Binding FileName}"></Label>
+                                <Image Source="{Binding ImageSource}"></Image>
+                            </Grid>
+                        </Button.Content>
                     </Button>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <Grid Grid.Row="2" Background="Azure" >
+        <Grid Grid.Row="3" Background="Azure" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="0"/>
