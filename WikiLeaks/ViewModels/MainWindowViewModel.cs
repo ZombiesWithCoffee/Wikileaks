@@ -8,17 +8,25 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
+using WikiLeaks.Abstract;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
-using WikiLeaks.Services;
 
 namespace WikiLeaks.ViewModels {
+
+    [Export(typeof(IMainWindowViewModel))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
 
         [ImportingConstructor]
-        public MainWindowViewModel() 
-        {
+        public MainWindowViewModel(IEmailValidation emailValidation) {
+            _emailValidation = emailValidation;
+        }
+
+        readonly IEmailValidation _emailValidation;
+
+        public void Initialize(){
             DocumentNo = Settings.Default.DocumentNo;
         }
 
@@ -122,19 +130,10 @@ namespace WikiLeaks.ViewModels {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try {
-                Attachments.Clear();
-                HtmlString = "&nbsp;";
+            try{
+                Clear();
 
-                MimeMessage message;
-
-                using (var client = new HttpClient()) {
-                    using (var response = await client.GetAsync(new Uri(MessageUrl))) {
-                        var stream = await response.Content.ReadAsStreamAsync();
-
-                        message = MimeMessage.Load(stream);
-                    }
-                }
+                var message = await GetMimeMessage();
 
                 From = message.From;
                 To = message.To;
@@ -142,15 +141,19 @@ namespace WikiLeaks.ViewModels {
                 Subject = message.Subject;
                 Date = message.Date;
 
+                // Format the text
+
                 var text = string.IsNullOrEmpty(message.HtmlBody) ? message.TextBody.Replace("\r\n", "<br/>") : message.HtmlBody;
 
                 foreach (var term in _searchTerms)
                     text = text.Replace(term, HighlightName(term));
 
+                // Change the HTML to be more friendly to this WebControl
+
                 HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + text;
                 GetAttachments(message);
 
-                Validated = new EmailValidation().ValidateSource(message);
+                Validated = _emailValidation.ValidateSource(message);
             }
             catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
@@ -158,6 +161,26 @@ namespace WikiLeaks.ViewModels {
             finally {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
+        }
+
+        private async Task<MimeMessage> GetMimeMessage(){
+
+            using (var client = new HttpClient()){
+                using (var response = await client.GetAsync(new Uri(MessageUrl))){
+                    var stream = await response.Content.ReadAsStreamAsync();
+
+                    return MimeMessage.Load(stream);
+                }
+            }
+        }
+
+        void Clear(){
+            Attachments.Clear();
+            HtmlString = "&nbsp;";
+            From = null;
+            To = null;
+            Cc = null;
+            Subject = null;
         }
 
         static string HighlightName(string text) {

@@ -4,8 +4,12 @@ using System.Windows.Input;
 using MimeKit;
 using WikiLeaks.Models;
 
-namespace WikiLeaks.ViewModels{
+namespace WikiLeaks.Abstract{
+
     public interface IMainWindowViewModel{
+
+        void Initialize();
+
         ICommand NextCommand { get; }
         ICommand PreviousCommand { get; }
         ICommand RefreshCommand { get; }

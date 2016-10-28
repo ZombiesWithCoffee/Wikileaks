@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WikiLeaks"
         xmlns:extensions="clr-namespace:Wikileaks.Extensions"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:WikiLeaks.Converters"
@@ -15,7 +14,9 @@
         Left="{extensions:SettingBinding Left}"
         Top="{extensions:SettingBinding Top}"
         WindowState="{extensions:SettingBinding WindowState}"        
-        Title="WikiLeaks Viewer">
+        Title="WikiLeaks Viewer"
+        d:DataContext ="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}, IsDesignTimeCreatable=True}"        
+        >
     
     <Window.Resources>
         <Image x:Key="Next" Source="Resources/Button Next.png" />
@@ -24,10 +25,6 @@
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
         <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
     </Window.Resources>
-    
-    <Window.DataContext>
-        <viewModels:MainWindowViewModel />
-    </Window.DataContext>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -87,7 +84,7 @@
                     <Button Click="Attachment_Click">
                         <Button.Content>
                             <StackPanel>
-                                <Image Source="{Binding ImageSource}" MaxHeight="96" ></Image>
+                                <Image Source="{Binding ImageSource}" MaxHeight="96" MaxWidth="250" ></Image>
                                 <Label Content="{Binding FileName}"></Label>
                             </StackPanel>
                         </Button.Content>

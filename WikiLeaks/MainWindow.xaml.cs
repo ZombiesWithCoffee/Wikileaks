@@ -1,23 +1,30 @@
-﻿using System.IO;
+﻿using System.ComponentModel.Composition;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using mshtml;
+using WikiLeaks.Abstract;
 using WikiLeaks.Models;
-using WikiLeaks.ViewModels;
 
 namespace WikiLeaks {
 
-    public partial class MainWindow {
+    [Export(typeof(MainWindow))]
+    public partial class MainWindow : IPartImportsSatisfiedNotification {
 
         public MainWindow() {
             InitializeComponent();
         }
 
+        [Import]
         public IMainWindowViewModel ViewModel
         {
             get { return DataContext as IMainWindowViewModel; }
             set { DataContext = value; }
+        }
+
+        public void OnImportsSatisfied() {
+            ViewModel.Initialize();
         }
 
         void Attachment_Click(object sender, RoutedEventArgs e) {

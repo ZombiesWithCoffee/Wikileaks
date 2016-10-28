@@ -34,7 +34,9 @@ namespace WikiLeaks.Models{
                     case "image/png":
                     case "image/gif":
                     case "image/jpg":
-                    case "image/jpeg": {
+                    case "image/jpeg":
+                    case "image/pjpeg":
+                        {
 
                         var image = Image.FromStream(memory);
                         var bitmap = new Bitmap(image);
