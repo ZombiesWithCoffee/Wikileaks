@@ -3,7 +3,9 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using MimeKit;
+using MimeKit.Cryptography;
 using WikiLeaks.Abstract;
+using WikiLeaks.Enums;
 using WikiLeaks.Extensions;
 
 namespace WikiLeaks.Services {
@@ -11,21 +13,28 @@ namespace WikiLeaks.Services {
     [Export(typeof(IEmailValidation))]
     public class EmailValidation : IEmailValidation{
 
-        public bool? ValidateSource(MimeMessage message){
+        [ImportingConstructor]
+        public EmailValidation(IDkimPublicKeyLocator dkimPublicKeyLocator){
+            _dkimPublicKeyLocator = dkimPublicKeyLocator;
+        }
+
+        readonly IDkimPublicKeyLocator _dkimPublicKeyLocator;
+
+        public SignatureValidation ValidateSource(MimeMessage message){
 
             var dkim = message.GetDkimHeader();
 
             if (dkim == null)
-                return null;
-
-            var dkimLocator = new DkimLocator();
+                return SignatureValidation.NoSignature;
 
             try{
-                return message.Verify(dkim, dkimLocator);
+                var validation = message.Verify(dkim, _dkimPublicKeyLocator);
+
+                return validation ? SignatureValidation.Valid : SignatureValidation.Invalid;
             }
             catch(Exception ex){
                 Debug.WriteLine(ex.Message);
-                return null;
+                return SignatureValidation.NoPublicKey;
             }
         }
 

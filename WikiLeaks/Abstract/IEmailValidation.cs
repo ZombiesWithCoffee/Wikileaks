@@ -1,7 +1,8 @@
 using MimeKit;
+using WikiLeaks.Enums;
 
 namespace WikiLeaks.Abstract{
     public interface IEmailValidation{
-        bool? ValidateSource(MimeMessage message);
+        SignatureValidation ValidateSource(MimeMessage message);
     }
 }

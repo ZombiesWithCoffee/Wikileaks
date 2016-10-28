@@ -9,8 +9,10 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
 using WikiLeaks.Abstract;
+using WikiLeaks.Enums;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
+using WikiLeaks.Services;
 
 namespace WikiLeaks.ViewModels {
 
@@ -19,12 +21,16 @@ namespace WikiLeaks.ViewModels {
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
 
+        public MainWindowViewModel(){}
+
         [ImportingConstructor]
-        public MainWindowViewModel(IEmailValidation emailValidation) {
+        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter){
             _emailValidation = emailValidation;
+            _highlighter = highlighter;
         }
 
         readonly IEmailValidation _emailValidation;
+        readonly IHighlighter _highlighter;
 
         public void Initialize(){
             DocumentNo = Settings.Default.DocumentNo;
@@ -46,6 +52,8 @@ namespace WikiLeaks.ViewModels {
         {
             Process.Start(Url);
         });
+
+        #region Properties
 
         public InternetAddressList From
         {
@@ -87,6 +95,27 @@ namespace WikiLeaks.ViewModels {
 
         DateTimeOffset _date;
 
+        public string HtmlString
+        {
+            get { return _htmlString; }
+            set { Set(ref _htmlString, value); }
+        }
+
+        string _htmlString;
+
+        public SignatureValidation SignatureValidation
+        {
+            get { return _validated; }
+            set { Set(ref _validated, value); }
+        }
+
+        SignatureValidation _validated;
+
+        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
+        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
+
+        #endregion
+
         public int DocumentNo
         {
             get { return Settings.Default.DocumentNo; }
@@ -102,29 +131,6 @@ namespace WikiLeaks.ViewModels {
                 RefreshPageAsync();
             }
         }
-
-        public string HtmlString
-        {
-            get { return _htmlString; }
-            set { Set(ref _htmlString, value); }
-        }
-
-        string _htmlString;
-
-        public bool? Validated
-        {
-            get { return _validated; }
-            set { Set(ref _validated, value); }
-        }
-
-        bool? _validated;
-
-        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
-        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
-
-        private readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
-            "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
-            "Urgent", "Username", "WJC" };
 
         private async Task RefreshPageAsync() {
 
@@ -145,15 +151,14 @@ namespace WikiLeaks.ViewModels {
 
                 var text = string.IsNullOrEmpty(message.HtmlBody) ? message.TextBody.Replace("\r\n", "<br/>") : message.HtmlBody;
 
-                foreach (var term in _searchTerms)
-                    text = text.Replace(term, HighlightName(term));
+                text = _highlighter.HighlightSearchTerms(text);
 
                 // Change the HTML to be more friendly to this WebControl
 
                 HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + text;
                 GetAttachments(message);
 
-                Validated = _emailValidation.ValidateSource(message);
+                SignatureValidation = _emailValidation.ValidateSource(message);
             }
             catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
@@ -163,7 +168,7 @@ namespace WikiLeaks.ViewModels {
             }
         }
 
-        private async Task<MimeMessage> GetMimeMessage(){
+        async Task<MimeMessage> GetMimeMessage(){
 
             using (var client = new HttpClient()){
                 using (var response = await client.GetAsync(new Uri(MessageUrl))){
@@ -181,10 +186,6 @@ namespace WikiLeaks.ViewModels {
             To = null;
             Cc = null;
             Subject = null;
-        }
-
-        static string HighlightName(string text) {
-            return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
         }
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();

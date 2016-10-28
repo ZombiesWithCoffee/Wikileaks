@@ -122,8 +122,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\SignatureValidation.cs" />
     <Compile Include="Models\Attachment.cs" />
-    <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Converters\SignatureValidationToColorConverter.cs" />
     <Compile Include="Services\DkimLocator.cs" />
     <Compile Include="Extensions\MimeKitExtensions.cs" />
     <Compile Include="Services\EmailValidation.cs" />
@@ -150,6 +151,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IMainWindowViewModel.cs" />
+    <Compile Include="Services\Highlighter.cs" />
+    <Compile Include="Abstract\IHighlighter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

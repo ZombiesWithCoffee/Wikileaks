@@ -80,6 +80,7 @@ namespace WikiLeaks.Models{
                         return null;
 
                     case "video/x-ms-wmv":
+                    case "video/mp4":
                         attachment.ImageSource = BitmapToImageSource(Resources.Video);
                         break;
 

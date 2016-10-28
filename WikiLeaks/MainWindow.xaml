@@ -23,7 +23,7 @@
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
-        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <converters:SignatureValidationToColorConverter x:Key="SignatureValidationToColorConverter" />
     </Window.Resources>
     
     <Grid>
@@ -111,7 +111,7 @@
                 </Style>
             </Grid.Resources>
 
-            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding Validated, Converter={StaticResource BoolToColorConverter}}" />
+            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
             <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
             <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />

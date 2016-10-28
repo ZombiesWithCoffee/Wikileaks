@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MimeKit;
+using WikiLeaks.Enums;
 using WikiLeaks.Models;
 
 namespace WikiLeaks.Abstract{
@@ -24,6 +25,6 @@ namespace WikiLeaks.Abstract{
         DateTimeOffset Date { get; set; }
         int DocumentNo { get; set; }
         string HtmlString { get; set; }
-        bool? Validated { get; set; }
+        SignatureValidation SignatureValidation { get; set; }
     }
 }

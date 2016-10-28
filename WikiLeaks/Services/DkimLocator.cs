@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
@@ -6,6 +7,7 @@ using Org.BouncyCastle.Security;
 
 namespace WikiLeaks.Services {
 
+    [Export(typeof(IDkimPublicKeyLocator))]
     public class DkimLocator : IDkimPublicKeyLocator {
 
         public AsymmetricKeyParameter LocatePublicKey(string methods, string domain, string selector, CancellationToken cancellationToken = new CancellationToken()) {
@@ -13,9 +15,6 @@ namespace WikiLeaks.Services {
             var dnsLookup = $"{selector}._domainkey.{domain}";
 
             var publicKey = GetPublicKey(dnsLookup);
-
-            if (publicKey == null)
-                return null;
 
             return PublicKeyFactory.CreateKey(Convert.FromBase64String(publicKey));
         }
@@ -90,10 +89,10 @@ namespace WikiLeaks.Services {
                 case "beta._domainkey.googlegroups.com":
                 case "smtpapi._domainkey.email.nationbuilder.com":
                 case "gamma._domainkey.gmail.com":
-                    return null;
+                    throw new InvalidOperationException("The public key doesn't exist");
 
                 default:
-                    return null;
+                    throw new InvalidOperationException("The DNS hasn't been looked up yet.");
             }
         }
     }
