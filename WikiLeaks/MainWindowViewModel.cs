@@ -42,7 +42,7 @@ namespace WikiLeaks
             set { Set(ref _from, value); }
         }
 
-        InternetAddressList _from;
+        private InternetAddressList _from;
 
         public InternetAddressList To
         {
@@ -50,7 +50,7 @@ namespace WikiLeaks
             set { Set(ref _to, value); }
         }
 
-        InternetAddressList _to;
+        private InternetAddressList _to;
 
         public InternetAddressList Cc
         {
@@ -58,7 +58,7 @@ namespace WikiLeaks
             set { Set(ref _cc, value); }
         }
 
-        InternetAddressList _cc;
+        private InternetAddressList _cc;
 
         public string Subject
         {
@@ -66,7 +66,7 @@ namespace WikiLeaks
             set { Set(ref _subject, value); }
         }
 
-        string _subject;
+        private string _subject;
 
         public DateTimeOffset Date
         {
@@ -74,7 +74,7 @@ namespace WikiLeaks
             set { Set(ref _date, value); }
         }
 
-        DateTimeOffset _date;
+        private DateTimeOffset _date;
 
         public int DocumentNo
         {
