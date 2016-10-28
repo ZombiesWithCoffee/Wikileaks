@@ -189,5 +189,15 @@ namespace WikiLeaks.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon WikiLeaks1 {
+            get {
+                object obj = ResourceManager.GetObject("WikiLeaks1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }
