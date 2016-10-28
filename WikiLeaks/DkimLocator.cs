@@ -64,6 +64,8 @@ namespace WikiLeaks {
 
                 // Non existant domains
                 case "beta._domainkey.googlegroups.com":
+                case "smtpapi._domainkey.email.nationbuilder.com":
+                case "gamma._domainkey.gmail.com":
                     return null;
 
                 default:

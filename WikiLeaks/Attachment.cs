@@ -11,7 +11,6 @@ namespace WikiLeaks{
     public class Attachment{
         public string FileName { get; set; }
         public byte[] Data { get; set; }
-        public string Extension { get; set; }
         public ImageSource ImageSource { get; set; }
 
         public static Attachment Load(MimeEntity mimeEntity){
@@ -32,70 +31,62 @@ namespace WikiLeaks{
 
                 switch (mimePart.ContentType.MimeType){
 
-                    case "image/png":{
-                        var imageSource = new BitmapImage();
-                        imageSource.BeginInit();
-                        imageSource.StreamSource = memory;
-                        imageSource.EndInit();
-
-                        // Assign the Source property of your image
-                        attachment.ImageSource = imageSource;
-                        attachment.Extension = "png";
-                        break;
-                    }
-
-                    case "image/gif":{
-                        var imageSource = new BitmapImage();
-                        imageSource.BeginInit();
-                        imageSource.StreamSource = memory;
-                        imageSource.EndInit();
-
-                        // Assign the Source property of your image
-                        attachment.ImageSource = imageSource;
-                        attachment.Extension = "gif";
-                        break;
-                    }
-
-                    case "image/jpeg":{
+                    case "image/png":
+                    case "image/gif":
+                    case "image/jpg":
+                    case "image/jpeg": {
 
                         var image = Image.FromStream(memory);
                         var bitmap = new Bitmap(image);
 
                         attachment.ImageSource = BitmapToImageSource(bitmap);
-                        attachment.Extension = "jpg";
                         break;
                     }
 
                     case "application/ics":
                         attachment.ImageSource = BitmapToImageSource(Resources.Calendar);
-                        attachment.Extension = "ics";
                         break;
 
                     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                         attachment.ImageSource = BitmapToImageSource(Resources.Microsoft_Word);
-                        attachment.Extension = "docx";
                         break;
 
                     case "application/msword":
                         attachment.ImageSource = BitmapToImageSource(Resources.Microsoft_Word);
-                        attachment.Extension = "doc";
+                        break;
+
+                    case "application/vnd.ms-excel":
+                        attachment.ImageSource = BitmapToImageSource(Resources.Excel);
                         break;
 
                     case "application/pdf":
-                        attachment.FileName = mimePart.FileName;
                         attachment.ImageSource = BitmapToImageSource(Resources.PDF);
-                        attachment.Extension = "pdf";
                         break;
 
                     case "APPLICATION/octet-stream":
-                        attachment.FileName = mimePart.FileName;
-                        attachment.Extension = "dat";
-                        attachment.ImageSource = BitmapToImageSource(Resources.PDF);
+                        attachment.ImageSource = BitmapToImageSource(Resources.DAT);
+                        break;
+
+                    case "audio/x-m4a":
+                        attachment.ImageSource = BitmapToImageSource(Resources.M4A);
+                        break;
+
+                    case "text/plain":
+                    case "text/html":
+                    case "text/calendar":
+                    case "message/delivery-status":
+                        return null;
+
+                    case "video/x-ms-wmv":
+                        attachment.ImageSource = BitmapToImageSource(Resources.Video);
+                        break;
+
+                    case "application/octet-stream":
+                        attachment.ImageSource = BitmapToImageSource(Resources.Unknown);
                         break;
 
                     default:
-                        attachment.FileName = mimePart.FileName;
-                        attachment.ImageSource = BitmapToImageSource(Resources.PDF);
+                        attachment.ImageSource = BitmapToImageSource(Resources.Unknown);
                         break;
                 }
 

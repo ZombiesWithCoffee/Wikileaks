@@ -114,6 +114,7 @@ namespace WikiLeaks {
 
             try {
                 Attachments.Clear();
+                Validated = null;
                 HtmlString = "&nbsp;";
 
                 MimeMessage message;
@@ -132,18 +133,14 @@ namespace WikiLeaks {
                 Subject = message.Subject;
                 Date = message.Date;
 
-                HtmlString = message.HtmlBody;
+                var text = message.HtmlBody;
 
-                if (string.IsNullOrEmpty(HtmlString)){
-
-                    var text = message.TextBody;
+                if (string.IsNullOrEmpty(text)){
+                    text = message.TextBody;
                     text = text.Replace("\r\n", "<br/>");
+                }
 
-                    HtmlString = text;
-                }
-                else{
-                    HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + HtmlString;
-                }
+                HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + text;
 
                 // HighlightNames(ref html);
                 GetAttachments(message);
@@ -162,7 +159,7 @@ namespace WikiLeaks {
 
         void GetAttachments(MimeMessage message) {
 
-            foreach (var mimeEntity in message.Attachments) {
+            foreach (var mimeEntity in message.BodyParts) {
 
                 var attachment = Attachment.Load(mimeEntity);
 

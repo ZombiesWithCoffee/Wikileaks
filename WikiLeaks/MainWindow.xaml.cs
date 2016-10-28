@@ -25,7 +25,7 @@ namespace WikiLeaks {
             if (attachment == null)
                 return;
 
-            var tempFileName = Path.Combine(Path.GetTempPath(), Path.ChangeExtension(attachment.FileName, attachment.Extension));
+            var tempFileName = Path.Combine(Path.GetTempPath(), attachment.FileName);
             File.WriteAllBytes(tempFileName, attachment.Data);
 
             System.Diagnostics.Process.Start(tempFileName);

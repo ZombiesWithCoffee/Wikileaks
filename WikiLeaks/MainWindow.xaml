@@ -84,7 +84,7 @@
                     <Button Click="Attachment_Click">
                         <Button.Content>
                             <StackPanel>
-                                <Image Source="{Binding ImageSource}" MaxHeight="128" ></Image>
+                                <Image Source="{Binding ImageSource}" MaxHeight="96" ></Image>
                                 <Label Content="{Binding FileName}"></Label>
                             </StackPanel>
                         </Button.Content>
