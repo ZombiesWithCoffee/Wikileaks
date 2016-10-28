@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.IO;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using Flurl;
 using Flurl.Http;
 using GalaSoft.MvvmLight;
@@ -15,11 +13,25 @@ using WikiLeaks.Properties;
 
 namespace WikiLeaks {
 
-    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel {
+    public class MainWindowViewModel : ViewModelBase {
 
         public MainWindowViewModel() {
             DocumentNo = Settings.Default.DocumentNo;
         }
+
+        public ICommand NextCommand => new RelayCommand(() => {
+            DocumentNo++;
+        });
+
+        public ICommand PreviousCommand => new RelayCommand(() => {
+            DocumentNo--;
+        });
+
+        public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
+
+        public ICommand WikileaksCommand => new RelayCommand(() => {
+            Process.Start(Url);
+        });
 
         public InternetAddressList From
         {
@@ -53,13 +65,13 @@ namespace WikiLeaks {
 
         string _subject;
 
-        public string Website
+        public DateTimeOffset Date
         {
-            get { return _website; }
-            set { Set(ref _website, value); }
+            get { return _date; }
+            set { Set(ref _date, value); }
         }
 
-        string _website;
+        DateTimeOffset _date;
 
         public int DocumentNo
         {
@@ -73,7 +85,7 @@ namespace WikiLeaks {
                 // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(nameof(Url));
 
-                RefreshPage();
+                RefreshPageAsync();
             }
         }
 
@@ -91,9 +103,12 @@ namespace WikiLeaks {
             set { Set(ref _validated, value); }
         }
 
-        private bool? _validated;
+        bool? _validated;
 
-        async Task RefreshPage() {
+        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
+        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
+
+        async Task RefreshPageAsync() {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
@@ -115,6 +130,7 @@ namespace WikiLeaks {
                 To = message.To;
                 Cc = message.Cc;
                 Subject = message.Subject;
+                Date = message.Date;
 
                 HtmlString = message.HtmlBody;
 
@@ -142,95 +158,19 @@ namespace WikiLeaks {
             }
         }
 
+        public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
+
         void GetAttachments(MimeMessage message) {
 
             foreach (var mimeEntity in message.Attachments) {
 
-                using (var memory = new MemoryStream()){
-                    var mimePart = mimeEntity as MimePart;
+                var attachment = Attachment.Load(mimeEntity);
 
-                    if (mimePart != null){
-                        mimePart.ContentObject.DecodeTo(memory);
-
-                        var attachment = new Attachment{
-                            Data = memory.GetBuffer(),
-                            FileName = mimePart.FileName
-                        };
-
-                        switch (mimePart.ContentType.MimeType){
-
-                            case "image/png":{
-                                var imageSource = new BitmapImage();
-                                imageSource.BeginInit();
-                                imageSource.StreamSource = memory;
-                                imageSource.EndInit();
-
-                                // Assign the Source property of your image
-                                attachment.ImageSource = imageSource;
-                                attachment.Extension = "png";
-                                break;
-                            }
-
-                            case "image/jpeg":{
-
-                                var image = Image.FromStream(memory);
-                                var bitmap = new Bitmap(image);
-
-                                attachment.ImageSource = BitmapToImageSource(bitmap);
-                                attachment.Extension = "jpg";
-                                break;
-                            }
-
-                            case "application/ics":
-                                attachment.ImageSource = BitmapToImageSource(Resources.Calendar);
-                                attachment.Extension = "ics";
-                                break;
-
-                            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                                attachment.ImageSource = BitmapToImageSource(Resources.Microsoft_Word);
-                                attachment.Extension = "docx";
-                                break;
-
-                            case "application/pdf":
-                                attachment.FileName = mimePart.FileName;
-                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
-                                attachment.Extension = "pdf";
-                                break;
-
-                            case "APPLICATION/octet-stream":
-                                attachment.FileName = mimePart.FileName;
-                                attachment.Extension = "dat";
-                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
-                                break;
-
-                            default:
-                                attachment.FileName = mimePart.FileName;
-                                attachment.ImageSource = BitmapToImageSource(Resources.PDF);
-                                break;
-                        }
-
-                        Attachments.Add(attachment);
-                    }
+                if(attachment != null) { 
+                    Attachments.Add(attachment);
                 }
             }
         }
-
-        BitmapImage BitmapToImageSource(Bitmap bitmap) {
-            using (var memory = new MemoryStream()) {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-
-                var bitmapimage = new BitmapImage();
-                bitmapimage.BeginInit();
-                bitmapimage.StreamSource = memory;
-                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapimage.EndInit();
-
-                return bitmapimage;
-            }
-        }
-
-        public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
 
         void HighlightNames(ref StringBuilder html) {
             HighlightName(ref html, "WJC");
@@ -268,27 +208,5 @@ namespace WikiLeaks {
         string HighlightName(string text, string color) {
             return $@"<strong style=""color:#{color}"">{text}</strong>";
         }
-
-        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
-        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
-
-        public ICommand NextCommand => new RelayCommand(() =>
-        {
-            DocumentNo++;
-        });
-
-        public ICommand PreviousCommand => new RelayCommand(() =>
-        {
-            DocumentNo--;
-        });
-
-        public ICommand UpdateCommand => new RelayCommand(async () => await RefreshPage());
-
-        public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPage());
-
-        public ICommand WikileaksCommand => new RelayCommand(() =>
-        {
-            System.Diagnostics.Process.Start(Url);
-        });
     }
 }

@@ -61,15 +61,6 @@ namespace WikiLeaks.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDE1rpd/RcC3QhMtKTa2waVqzI9+JoItq0qxNPEywBaN7x64YCwoq010CDGKo17bLvqN8rMKI4gUxiHSV8oFFkDXsnHlyhNBKMzy5DZKcrRh7rS/4RnWX+eLl/HqJ3S6nmgAyDqYOk5vPxp0D/nhKUNoePdDw9mftStozxcTfux6QIDAQAB.
-        /// </summary>
-        internal static string BlueStateDigital {
-            get {
-                return ResourceManager.GetString("BlueStateDigital", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Button_Next {
@@ -96,60 +87,6 @@ namespace WikiLeaks.Properties {
             get {
                 object obj = ResourceManager.GetObject("Calendar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPQbUA/GI9q/nSI59sTfgzf8ZFlgdOKZ8IPOmPEUhgbAeqgv02OMiH4WEV5sOXURfUdD+CJ4usxumlo7tseSr3Zvpr98XjDjGnaA4NTG4iRmk7cedcYvv2fbU4iXACS6YI08suYiOuB5ITTi8LTrHHr/tnTia8se7AO+w3b2KvmQIDAQAB.
-        /// </summary>
-        internal static string CcSend1000073432 {
-            get {
-                return ResourceManager.GetString("CcSend1000073432", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwuqXbtRtZLMYtQytThkLGpx7SOPdbO8dEKYHHIvcYLd1c7C8tMJjIuxSnNgA2+W6g6WtPJjr/Af2yqmHn3AKOdaPzp+Wx/kDNoGQDyO98OO1/0e+W1MXOWHAkLJe6/eHx7rEp0gNXU1b16WvhiLWQmr3bekPPfJvIOsrW8HeQrA2RX8Eg5a2HAnQ0jfPB1bzpFN8EjWlrP0ISQhC4X2/UQy+3Fi8yLjVzEqiMPhowI4ndC8wWG0jPuPL0X02SPmCar4yjlh7zrd7x9Hix+Eknz1bqQVms15n2iylcd2EluckeMmvAFnIZXiGnckzTVPq4ouOkt6UJZVxcBikzJEFxwIDAQAB.
-        /// </summary>
-        internal static string ComcastQ20140121 {
-            get {
-                return ResourceManager.GetString("ComcastQ20140121", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCy+xh45ea5Iiwm1T7TzpuA3IRe4imyJC5w+S1yOZjCQglI6KMCIdp5RHe03L44E9AUizK3VPcGHZpVCUn2h3QxCy/7/NlyGpQziRYHfgAjwyekZhF9gzCC4RbRBV2jc5L7fU/glUH9rY7XHXSLQLDfibO0kuGElzJU+Iu2lBWUeQIDAQAB.
-        /// </summary>
-        internal static string DcccKey {
-            get {
-                return ResourceManager.GetString("DcccKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1Kd87/UeJjenpabgbFwh+eBCsSTrqmwIYYvywlbhbqoo2DymndFkbjOVIPIldNs/m40KF+yzMn1skyoxcTUGCQs8g3FgD2Ap3ZB5DekAo5wMmk4wimDO+U8QzI3SD07y2+07wlNWwIt8svnxgdxGkVbbhzY8i+RQ9DpSVpPbF7ykQxtKXkv/ahW3KjViiAH+ghvvIhkx4xYSIc9oSwVmAl5OctMEeWUwg8Istjqz8BZeTWbf41fbNhte7Y+YqZOwq1Sd0DbvYAD9NOZK9vlfuac0598HY+vtSBczUiKERHv1yRbcaQtZFh5wtiRrN04BLUTD21MycBX5jYchHjPY/wIDAQAB.
-        /// </summary>
-        internal static string Gmail20120113 {
-            get {
-                return ResourceManager.GetString("Gmail20120113", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5kQ31/aZDreQqR9/ikNe00ywRvZBFHod6dja+Xdui4C1y8SVrkUMQQLOO49UA+ROm4evxAru5nGPbSl7WJzyGLl0z8Lt+qjGSa3+qxf4ZhDQ2chLS+2g0Nnzi6coUpF8rjuvuWHWXnzpvLxE5TQdfgp8yziNWUqCXG/LBbgeGqCIpaQjlaA6GtPbJbh0jl1NcQLqrOmc2Kj2urNJAW+UPehVGzHal3bCtnNz55sajugRps1rO8lYdPamQjLEJhwaEg6/E50m58BVVdK3KHvQzrQBwfvm99mHLALJqkFHnhyKARLQf8tQMy8wVtIwY2vOUwwJxt3e0KcIX6NtnjSSwIDAQAB.
-        /// </summary>
-        internal static string Google20120113 {
-            get {
-                return ResourceManager.GetString("Google20120113", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJdAYdE2z61YpUMFqFTFJqlFomm7C4Kk97nzJmR4YZuJ8SUy9CF35UVPQzh3EMLhP+yOqEl29Ax2hA/h7vayr/f/a19x2jrFCwxVry+nACH1FVmIwV3b5FCNEkNeAIqjbY8K9PeTmpqNhWDbvXeKgFbIDwhWq0HP2PbySkOe4tTQIDAQAB.
-        /// </summary>
-        internal static string HillaryClinton {
-            get {
-                return ResourceManager.GetString("HillaryClinton", resourceCulture);
             }
         }
         
