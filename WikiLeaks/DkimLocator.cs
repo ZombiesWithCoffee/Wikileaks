@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
-using WikiLeaks.Properties;
 
 namespace WikiLeaks {
 

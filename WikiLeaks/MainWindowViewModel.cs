@@ -11,11 +11,14 @@ using GalaSoft.MvvmLight.Command;
 using MimeKit;
 using WikiLeaks.Properties;
 
-namespace WikiLeaks {
+namespace WikiLeaks
+{
 
-    public class MainWindowViewModel : ViewModelBase {
+    public class MainWindowViewModel : ViewModelBase
+    {
 
-        public MainWindowViewModel() {
+        public MainWindowViewModel()
+        {
             DocumentNo = Settings.Default.DocumentNo;
         }
 
@@ -95,7 +98,7 @@ namespace WikiLeaks {
             set { Set(ref _htmlString, value); }
         }
 
-        string _htmlString;
+        private string _htmlString;
 
         public bool? Validated
         {
@@ -103,16 +106,26 @@ namespace WikiLeaks {
             set { Set(ref _validated, value); }
         }
 
-        bool? _validated;
+        private bool? _validated;
 
         public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
         public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
 
-        async Task RefreshPageAsync() {
+        private const string HtmlHeader = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>";
+
+
+        private readonly string[] _searchTerms = new[] {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
+            "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
+            "Urgent", "Username", "WJC" };
+
+
+        private async Task RefreshPageAsync()
+        {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try {
+            try
+            {
                 Attachments.Clear();
                 HtmlString = "&nbsp;";
 
@@ -121,7 +134,8 @@ namespace WikiLeaks {
                 using (var stream = await "https://wikileaks.org"
                     .AppendPathSegment("podesta-emails/get")
                     .AppendPathSegment(DocumentNo)
-                    .GetStreamAsync()) {
+                    .GetStreamAsync())
+                {
 
                     message = MimeMessage.Load(stream);
                 }
@@ -132,81 +146,48 @@ namespace WikiLeaks {
                 Subject = message.Subject;
                 Date = message.Date;
 
-                HtmlString = message.HtmlBody;
+                HtmlString = (string.IsNullOrEmpty(HtmlString)) ? message.TextBody.Replace("\r\n", "<br/>") : HtmlHeader + message.HtmlBody;
 
-                if (string.IsNullOrEmpty(HtmlString)){
-
-                    var text = message.TextBody;
-                    text = text.Replace("\r\n", "<br/>");
-
-                    HtmlString = text;
-                }
-                else{
-                    HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + HtmlString;
+                foreach (var term in _searchTerms)
+                {
+                    HtmlString = HtmlString.Replace(term, HighlightName(term));
                 }
 
-                // HighlightNames(ref html);
                 GetAttachments(message);
 
                 Validated = new EmailValidation().ValidateSource(message);
             }
-            catch (Exception ex) {
-                int j = 0;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
-            finally {
+            finally
+            {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
 
-        void GetAttachments(MimeMessage message) {
+        private void GetAttachments(MimeMessage message)
+        {
 
-            foreach (var mimeEntity in message.Attachments) {
+            foreach (var mimeEntity in message.Attachments)
+            {
 
                 var attachment = Attachment.Load(mimeEntity);
 
-                if(attachment != null) { 
+                if (attachment != null)
+                {
                     Attachments.Add(attachment);
                 }
             }
         }
 
-        void HighlightNames(ref StringBuilder html) {
-            HighlightName(ref html, "WJC");
-            HighlightName(ref html, "HRC");
-            HighlightName(ref html, "KSA");
-            HighlightName(ref html, "CVC");
-            HighlightName(ref html, "Obama");
-            HighlightName(ref html, "Hillary");
-            HighlightName(ref html, "Clinton");
-            HighlightName(ref html, "Mills");
-            HighlightName(ref html, "Podesta");
-            HighlightName(ref html, "Soros", "FF0000");
-            HighlightName(ref html, "Turi");
-            HighlightName(ref html, "Qatar");
-            HighlightName(ref html, "Striker");
-            HighlightName(ref html, "Saudi");
-            HighlightName(ref html, "Foundation");
-            HighlightName(ref html, "Pagliano");
-            HighlightName(ref html, "Login");
-            HighlightName(ref html, "Password");
-            HighlightName(ref html, "Username");
-            HighlightName(ref html, "Health");
-            HighlightName(ref html, "Emergency");
-            HighlightName(ref html, "Urgent");
-            HighlightName(ref html, "Potus");
-        }
 
-        void HighlightName(ref StringBuilder html, string name, string color = "408FBF") {
-
-            html = html.Replace(name, HighlightName(name, color));
-            html = html.Replace(name.ToUpper(), HighlightName(name.ToUpper(), color));
-            html = html.Replace(name.ToLower(), HighlightName(name.ToLower(), color));
-        }
-
-        string HighlightName(string text, string color) {
-            return $@"<strong style=""color:#{color}"">{text}</strong>";
+        private static string HighlightName(string text)
+        {
+            return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
         }
     }
 }

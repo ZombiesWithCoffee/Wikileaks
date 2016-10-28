@@ -4,11 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using mshtml;
 
-namespace WikiLeaks {
+namespace WikiLeaks
+{
 
-    public partial class MainWindow {
+    public partial class MainWindow
+    {
 
-        public MainWindow() {
+        public MainWindow()
+        {
             InitializeComponent();
         }
 
@@ -18,7 +21,8 @@ namespace WikiLeaks {
             set { DataContext = value; }
         }
 
-        void Attachment_Click(object sender, RoutedEventArgs e) {
+        private void Attachment_Click(object sender, RoutedEventArgs e)
+        {
             var button = sender as Button;
             var attachment = button?.DataContext as Attachment;
 
@@ -31,10 +35,12 @@ namespace WikiLeaks {
             System.Diagnostics.Process.Start(tempFileName);
         }
 
-        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
+        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e)
+        {
             var webBrowser = sender as WebBrowser;
 
-            if (webBrowser == null) {
+            if (webBrowser == null)
+            {
                 return;
             }
 
