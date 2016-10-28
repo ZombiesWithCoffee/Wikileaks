@@ -1,8 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace WikiLeaks{
+namespace WikiLeaks.Extensions{
 
     public static class WebBrowserBehaviors{
 

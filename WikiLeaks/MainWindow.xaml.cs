@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using mshtml;
+using WikiLeaks.Models;
+using WikiLeaks.ViewModels;
 
 namespace WikiLeaks {
 
@@ -12,9 +14,9 @@ namespace WikiLeaks {
             InitializeComponent();
         }
 
-        public MainWindowViewModel ViewModel
+        public IMainWindowViewModel ViewModel
         {
-            get { return DataContext as MainWindowViewModel; }
+            get { return DataContext as IMainWindowViewModel; }
             set { DataContext = value; }
         }
 
@@ -31,7 +33,7 @@ namespace WikiLeaks {
             System.Diagnostics.Process.Start(tempFileName);
         }
 
-        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
+        void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
             var webBrowser = sender as WebBrowser;
 
             if (webBrowser == null) {

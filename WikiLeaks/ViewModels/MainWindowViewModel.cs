@@ -1,35 +1,41 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Flurl;
-using Flurl.Http;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
+using WikiLeaks.Models;
 using WikiLeaks.Properties;
+using WikiLeaks.Services;
 
-namespace WikiLeaks {
+namespace WikiLeaks.ViewModels {
 
-    public class MainWindowViewModel : ViewModelBase {
+    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
 
-        public MainWindowViewModel() {
+        [ImportingConstructor]
+        public MainWindowViewModel() 
+        {
             DocumentNo = Settings.Default.DocumentNo;
         }
 
-        public ICommand NextCommand => new RelayCommand(() => {
+        public ICommand NextCommand => new RelayCommand(() =>
+        {
             DocumentNo++;
         });
 
-        public ICommand PreviousCommand => new RelayCommand(() => {
+        public ICommand PreviousCommand => new RelayCommand(() =>
+        {
             DocumentNo--;
         });
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
 
-        public ICommand WikileaksCommand => new RelayCommand(() => {
+        public ICommand WikileaksCommand => new RelayCommand(() =>
+        {
             Process.Start(Url);
         });
 
@@ -108,31 +114,26 @@ namespace WikiLeaks {
         public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
         public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
 
-
-
         private readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
             "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
             "Urgent", "Username", "WJC" };
 
-        private async Task RefreshPageAsync()
-        {
+        private async Task RefreshPageAsync() {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try
-            {
+            try {
                 Attachments.Clear();
                 HtmlString = "&nbsp;";
 
                 MimeMessage message;
 
-                using (var stream = await "https://wikileaks.org"
-                    .AppendPathSegment("podesta-emails/get")
-                    .AppendPathSegment(DocumentNo)
-                    .GetStreamAsync())
-                {
+                using (var client = new HttpClient()) {
+                    using (var response = await client.GetAsync(new Uri(MessageUrl))) {
+                        var stream = await response.Content.ReadAsStreamAsync();
 
-                    message = MimeMessage.Load(stream);
+                        message = MimeMessage.Load(stream);
+                    }
                 }
 
                 From = message.From;
@@ -142,6 +143,7 @@ namespace WikiLeaks {
                 Date = message.Date;
 
                 var text = string.IsNullOrEmpty(message.HtmlBody) ? message.TextBody.Replace("\r\n", "<br/>") : message.HtmlBody;
+
                 foreach (var term in _searchTerms)
                     text = text.Replace(term, HighlightName(term));
 
@@ -150,18 +152,15 @@ namespace WikiLeaks {
 
                 Validated = new EmailValidation().ValidateSource(message);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
-            finally
-            {
+            finally {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
-        private static string HighlightName(string text)
-        {
+        static string HighlightName(string text) {
             return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
         }
 
@@ -173,7 +172,7 @@ namespace WikiLeaks {
 
                 var attachment = Attachment.Load(mimeEntity);
 
-                if(attachment != null) { 
+                if (attachment != null) {
                     Attachments.Add(attachment);
                 }
             }

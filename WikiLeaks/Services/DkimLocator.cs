@@ -1,13 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
-using WikiLeaks.Properties;
 
-namespace WikiLeaks {
+namespace WikiLeaks.Services {
 
     public class DkimLocator : IDkimPublicKeyLocator {
 
@@ -71,16 +68,6 @@ namespace WikiLeaks {
                 default:
                     return null;
             }
-
-        }
-
-        public static Stream GenerateStreamFromString(string s) {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
         }
     }
 }

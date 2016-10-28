@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using MimeKit;
 using WikiLeaks.Properties;
 
-namespace WikiLeaks{
+namespace WikiLeaks.Models{
 
     public class Attachment{
         public string FileName { get; set; }
@@ -93,7 +93,6 @@ namespace WikiLeaks{
                 return attachment;
             }
         }
-
 
         static BitmapImage BitmapToImageSource(Image bitmap) {
             using (var memory = new MemoryStream()) {

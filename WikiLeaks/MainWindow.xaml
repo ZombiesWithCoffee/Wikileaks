@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:WikiLeaks"
         xmlns:extensions="clr-namespace:Wikileaks.Extensions"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:WikiLeaks.Converters"
+        xmlns:viewModels="clr-namespace:WikiLeaks.ViewModels"
+        xmlns:extensions1="clr-namespace:WikiLeaks.Extensions"
         mc:Ignorable="d"
         Height="{extensions:SettingBinding Height}"
         Width="{extensions:SettingBinding Width}"
@@ -19,11 +22,11 @@
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
-        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
     </Window.Resources>
     
     <Window.DataContext>
-        <local:MainWindowViewModel />
+        <viewModels:MainWindowViewModel />
     </Window.DataContext>
     
     <Grid>
@@ -69,7 +72,7 @@
         </Grid>
 
         <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BorderBrush="Black">
-            <WebBrowser x:Name="WebBrowser" local:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
+            <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
         </Border>
         
         <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace WikiLeaks{
+namespace WikiLeaks.Converters{
 
     public sealed class BoolToColorConverter : IValueConverter {
 

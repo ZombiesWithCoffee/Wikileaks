@@ -1,12 +1,15 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using MimeKit;
+using WikiLeaks.Abstract;
+using WikiLeaks.Extensions;
 
-namespace WikiLeaks {
+namespace WikiLeaks.Services {
 
-    public class EmailValidation {
+    [Export(typeof(IEmailValidation))]
+    public class EmailValidation : IEmailValidation{
 
         public bool? ValidateSource(MimeMessage message){
 
@@ -33,13 +36,6 @@ namespace WikiLeaks {
             writer.Flush();
             stream.Position = 0;
             return stream;
-        }
-    }
-
-
-    public static class MimeKitHelpers {
-        public static Header GetDkimHeader(this MimeMessage msg) {
-            return msg.Headers.FirstOrDefault(header => header.Id == HeaderId.DkimSignature);
         }
     }
 }
