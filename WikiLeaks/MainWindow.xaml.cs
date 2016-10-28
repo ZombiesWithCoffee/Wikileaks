@@ -23,6 +23,9 @@ namespace WikiLeaks {
             set { DataContext = value; }
         }
 
+        [Import]
+        public ICssStyle CssStyle { get; set; }
+
         public void OnImportsSatisfied() {
             ViewModel.Initialize();
         }
@@ -43,27 +46,12 @@ namespace WikiLeaks {
         void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
             var webBrowser = sender as WebBrowser;
 
-            if (webBrowser == null) {
-                return;
-            }
-
-            var document = ((WebBrowser)sender).Document as HTMLDocument;
+            var document = webBrowser?.Document as HTMLDocument;
 
             if (document == null)
                 return;
 
-            var styleSheet = document.createStyleSheet("", 0);
-
-            styleSheet.cssText = @"
-                h2   {color: blue;}
-
-                #content header {
-                    color: #000;
-                    border-bottom: 1px solid #000;
-                    border-top: 5px solid #000;
-                    padding-bottom: 5px;
-                }
-            ";
+            CssStyle.Update(document);
         }
     }
 }

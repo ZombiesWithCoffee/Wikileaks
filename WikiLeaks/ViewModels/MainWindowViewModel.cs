@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -19,7 +21,7 @@ namespace WikiLeaks.ViewModels {
     [Export(typeof(IMainWindowViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
 
-    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
+    public class MainWindowViewModel : IMainWindowViewModel, INotifyPropertyChanged{
 
         public MainWindowViewModel(){}
 
@@ -202,5 +204,11 @@ namespace WikiLeaks.ViewModels {
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null){
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
     }
 }

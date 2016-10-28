@@ -2,8 +2,8 @@
 
 namespace WikiLeaks.Services {
 
- //   [Export(typeof(IHighlighter))]
-    public class Highlighter : IHighlighter{
+    [Export(typeof(IHighlighter))]
+    public class ClassHighlighter : IHighlighter{
 
         readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
             "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
@@ -17,7 +17,7 @@ namespace WikiLeaks.Services {
         }
 
         static string HighlightName(string text) {
-            return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
+            return $@"<span class=""highlight"">{text}</span>";
         }
     }
 }
