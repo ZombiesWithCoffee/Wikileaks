@@ -44,16 +44,28 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Padding" Value="3" />
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                </Style>
+            </Grid.Resources>
             
-            <Label Content="From:" FontSize="14" FontWeight="Bold"/>
-            <Label Content="{Binding From}" Grid.Row="0" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
-            <Label Content="To:" Grid.Row="1" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
-            <Label Content="{Binding To}" Grid.Row="1" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
-            <Label Content="CC:" Grid.Row="2" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
-            <Label Content="{Binding Cc}" Grid.Row="2" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
-            <Label Content="Subject:" Grid.Row="3" Grid.Column="0" FontSize="14" FontWeight="Bold"/>
-            <Label Content="{Binding Subject}" Grid.Row="3" Grid.Column="1" FontSize="14" FontWeight="Bold"/>
+            <Label Content="From:" />
+            <TextBlock Text="{Binding From}" Grid.Row="0" Grid.Column="1" />
+            <Label Content="To:" Grid.Row="1" Grid.Column="0" />
+            <TextBlock Text="{Binding To}" Grid.Row="1" Grid.Column="1" />
+            <Label Content="CC:" Grid.Row="2" Grid.Column="0" />
+            <TextBlock Text="{Binding Cc}" Grid.Row="2" Grid.Column="1" />
+            <Label Content="Subject:" Grid.Row="3" Grid.Column="0" />
+            <TextBlock Text="{Binding Subject}" Grid.Row="3" Grid.Column="1" />
+            <Label Content="Date:" Grid.Row="4" Grid.Column="0" />
+            <TextBlock Text="{Binding Date}" Grid.Row="4" Grid.Column="1" />
         </Grid>
 
         <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BorderBrush="Black">
@@ -69,12 +81,12 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Button MaxHeight="128" Click="Attachment_Click">
+                    <Button Click="Attachment_Click">
                         <Button.Content>
-                            <Grid>
+                            <StackPanel>
+                                <Image Source="{Binding ImageSource}" MaxHeight="128" ></Image>
                                 <Label Content="{Binding FileName}"></Label>
-                                <Image Source="{Binding ImageSource}"></Image>
-                            </Grid>
+                            </StackPanel>
                         </Button.Content>
                     </Button>
                 </DataTemplate>
@@ -91,12 +103,20 @@
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
             </Grid.ColumnDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Padding" Value="2" />
+                    <Setter Property="Margin" Value="2"/>
+                </Style>
+            </Grid.Resources>
+
             <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding Validated, Converter={StaticResource BoolToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
-            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" Padding="2" Margin="2"/>
-            <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" Padding="2" Margin="2"/>
-            <Button Grid.Column="5" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" Padding="2" Margin="2"/>
-            <Button Grid.Column="6" Content="{StaticResource Next}" Command="{Binding NextCommand}" Padding="2" Margin="2"/>
+            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
+            <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
+            <Button Grid.Column="5" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
+            <Button Grid.Column="6" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>
 </Window>
