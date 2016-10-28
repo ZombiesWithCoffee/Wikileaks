@@ -108,13 +108,20 @@ namespace WikiLeaks {
         public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
         public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
 
-        async Task RefreshPageAsync() {
+
+
+        private readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
+            "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
+            "Urgent", "Username", "WJC" };
+
+        private async Task RefreshPageAsync()
+        {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try {
+            try
+            {
                 Attachments.Clear();
-                Validated = null;
                 HtmlString = "&nbsp;";
 
                 MimeMessage message;
@@ -122,7 +129,8 @@ namespace WikiLeaks {
                 using (var stream = await "https://wikileaks.org"
                     .AppendPathSegment("podesta-emails/get")
                     .AppendPathSegment(DocumentNo)
-                    .GetStreamAsync()) {
+                    .GetStreamAsync())
+                {
 
                     message = MimeMessage.Load(stream);
                 }
@@ -133,26 +141,28 @@ namespace WikiLeaks {
                 Subject = message.Subject;
                 Date = message.Date;
 
-                var text = message.HtmlBody;
-
-                if (string.IsNullOrEmpty(text)){
-                    text = message.TextBody;
-                    text = text.Replace("\r\n", "<br/>");
-                }
+                var text = string.IsNullOrEmpty(message.HtmlBody) ? message.TextBody.Replace("\r\n", "<br/>") : message.HtmlBody;
+                foreach (var term in _searchTerms)
+                    text = text.Replace(term, HighlightName(term));
 
                 HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + text;
-
-                // HighlightNames(ref html);
                 GetAttachments(message);
 
                 Validated = new EmailValidation().ValidateSource(message);
             }
-            catch (Exception ex) {
-                int j = 0;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
-            finally {
+            finally
+            {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
+        }
+
+        private static string HighlightName(string text)
+        {
+            return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
         }
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
@@ -169,41 +179,5 @@ namespace WikiLeaks {
             }
         }
 
-        void HighlightNames(ref StringBuilder html) {
-            HighlightName(ref html, "WJC");
-            HighlightName(ref html, "HRC");
-            HighlightName(ref html, "KSA");
-            HighlightName(ref html, "CVC");
-            HighlightName(ref html, "Obama");
-            HighlightName(ref html, "Hillary");
-            HighlightName(ref html, "Clinton");
-            HighlightName(ref html, "Mills");
-            HighlightName(ref html, "Podesta");
-            HighlightName(ref html, "Soros", "FF0000");
-            HighlightName(ref html, "Turi");
-            HighlightName(ref html, "Qatar");
-            HighlightName(ref html, "Striker");
-            HighlightName(ref html, "Saudi");
-            HighlightName(ref html, "Foundation");
-            HighlightName(ref html, "Pagliano");
-            HighlightName(ref html, "Login");
-            HighlightName(ref html, "Password");
-            HighlightName(ref html, "Username");
-            HighlightName(ref html, "Health");
-            HighlightName(ref html, "Emergency");
-            HighlightName(ref html, "Urgent");
-            HighlightName(ref html, "Potus");
-        }
-
-        void HighlightName(ref StringBuilder html, string name, string color = "408FBF") {
-
-            html = html.Replace(name, HighlightName(name, color));
-            html = html.Replace(name.ToUpper(), HighlightName(name.ToUpper(), color));
-            html = html.Replace(name.ToLower(), HighlightName(name.ToLower(), color));
-        }
-
-        string HighlightName(string text, string color) {
-            return $@"<strong style=""color:#{color}"">{text}</strong>";
-        }
     }
 }

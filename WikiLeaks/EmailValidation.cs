@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MimeKit;
@@ -20,6 +21,7 @@ namespace WikiLeaks {
                 return message.Verify(dkim, dkimLocator);
             }
             catch(Exception ex){
+                Debug.WriteLine(ex.Message);
                 return null;
             }
         }
