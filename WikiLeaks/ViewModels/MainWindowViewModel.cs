@@ -1,37 +1,59 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Flurl;
-using Flurl.Http;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
+using WikiLeaks.Abstract;
+using WikiLeaks.Enums;
+using WikiLeaks.Models;
 using WikiLeaks.Properties;
+using WikiLeaks.Services;
 
-namespace WikiLeaks {
+namespace WikiLeaks.ViewModels {
 
-    public class MainWindowViewModel : ViewModelBase {
+    [Export(typeof(IMainWindowViewModel))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
 
-        public MainWindowViewModel() {
+    public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
+
+        public MainWindowViewModel(){}
+
+        [ImportingConstructor]
+        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter){
+            _emailValidation = emailValidation;
+            _highlighter = highlighter;
+        }
+
+        readonly IEmailValidation _emailValidation;
+        readonly IHighlighter _highlighter;
+
+        public void Initialize(){
             DocumentNo = Settings.Default.DocumentNo;
         }
 
-        public ICommand NextCommand => new RelayCommand(() => {
+        public ICommand NextCommand => new RelayCommand(() =>
+        {
             DocumentNo++;
         });
 
-        public ICommand PreviousCommand => new RelayCommand(() => {
+        public ICommand PreviousCommand => new RelayCommand(() =>
+        {
             DocumentNo--;
         });
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
 
-        public ICommand WikileaksCommand => new RelayCommand(() => {
+        public ICommand WikileaksCommand => new RelayCommand(() =>
+        {
             Process.Start(Url);
         });
+
+        #region Properties
 
         public InternetAddressList From
         {
@@ -73,6 +95,27 @@ namespace WikiLeaks {
 
         DateTimeOffset _date;
 
+        public string HtmlString
+        {
+            get { return _htmlString; }
+            set { Set(ref _htmlString, value); }
+        }
+
+        string _htmlString;
+
+        public SignatureValidation SignatureValidation
+        {
+            get { return _validated; }
+            set { Set(ref _validated, value); }
+        }
+
+        SignatureValidation _validated;
+
+        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
+        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
+
+        #endregion
+
         public int DocumentNo
         {
             get { return Settings.Default.DocumentNo; }
@@ -89,51 +132,14 @@ namespace WikiLeaks {
             }
         }
 
-        public string HtmlString
-        {
-            get { return _htmlString; }
-            set { Set(ref _htmlString, value); }
-        }
-
-        string _htmlString;
-
-        public bool? Validated
-        {
-            get { return _validated; }
-            set { Set(ref _validated, value); }
-        }
-
-        bool? _validated;
-
-        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
-        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
-
-
-
-        private readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
-            "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
-            "Urgent", "Username", "WJC" };
-
-        private async Task RefreshPageAsync()
-        {
+        private async Task RefreshPageAsync() {
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try
-            {
-                Attachments.Clear();
-                HtmlString = "&nbsp;";
+            try{
+                Clear();
 
-                MimeMessage message;
-
-                using (var stream = await "https://wikileaks.org"
-                    .AppendPathSegment("podesta-emails/get")
-                    .AppendPathSegment(DocumentNo)
-                    .GetStreamAsync())
-                {
-
-                    message = MimeMessage.Load(stream);
-                }
+                var message = await GetMimeMessage();
 
                 From = message.From;
                 To = message.To;
@@ -141,28 +147,45 @@ namespace WikiLeaks {
                 Subject = message.Subject;
                 Date = message.Date;
 
+                // Format the text
+
                 var text = string.IsNullOrEmpty(message.HtmlBody) ? message.TextBody.Replace("\r\n", "<br/>") : message.HtmlBody;
-                foreach (var term in _searchTerms)
-                    text = text.Replace(term, HighlightName(term));
+
+                text = _highlighter.HighlightSearchTerms(text);
+
+                // Change the HTML to be more friendly to this WebControl
 
                 HtmlString = @"<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/><meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + text;
                 GetAttachments(message);
 
-                Validated = new EmailValidation().ValidateSource(message);
+                SignatureValidation = _emailValidation.ValidateSource(message);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
-            finally
-            {
+            finally {
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
-        private static string HighlightName(string text)
-        {
-            return $@"<strong style=""color:#408FBF"">>{text}<</strong>";
+        async Task<MimeMessage> GetMimeMessage(){
+
+            using (var client = new HttpClient()){
+                using (var response = await client.GetAsync(new Uri(MessageUrl))){
+                    var stream = await response.Content.ReadAsStreamAsync();
+
+                    return MimeMessage.Load(stream);
+                }
+            }
+        }
+
+        void Clear(){
+            Attachments.Clear();
+            HtmlString = "&nbsp;";
+            From = null;
+            To = null;
+            Cc = null;
+            Subject = null;
         }
 
         public ObservableCollection<Attachment> Attachments { get; set; } = new ObservableCollection<Attachment>();
@@ -173,7 +196,7 @@ namespace WikiLeaks {
 
                 var attachment = Attachment.Load(mimeEntity);
 
-                if(attachment != null) { 
+                if (attachment != null) {
                     Attachments.Add(attachment);
                 }
             }

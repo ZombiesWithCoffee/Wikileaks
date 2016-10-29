@@ -1,21 +1,33 @@
-﻿using System.IO;
+﻿using System.ComponentModel.Composition;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using mshtml;
+using WikiLeaks.Abstract;
+using WikiLeaks.Models;
 
 namespace WikiLeaks {
 
-    public partial class MainWindow {
+    [Export(typeof(MainWindow))]
+    public partial class MainWindow : IPartImportsSatisfiedNotification {
 
         public MainWindow() {
             InitializeComponent();
         }
 
-        public MainWindowViewModel ViewModel
+        [Import]
+        public IMainWindowViewModel ViewModel
         {
-            get { return DataContext as MainWindowViewModel; }
+            get { return DataContext as IMainWindowViewModel; }
             set { DataContext = value; }
+        }
+
+        [Import]
+        public ICssStyle CssStyle { get; set; }
+
+        public void OnImportsSatisfied() {
+            ViewModel.Initialize();
         }
 
         void Attachment_Click(object sender, RoutedEventArgs e) {
@@ -31,30 +43,15 @@ namespace WikiLeaks {
             System.Diagnostics.Process.Start(tempFileName);
         }
 
-        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
+        void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
             var webBrowser = sender as WebBrowser;
 
-            if (webBrowser == null) {
-                return;
-            }
-
-            var document = ((WebBrowser)sender).Document as HTMLDocument;
+            var document = webBrowser?.Document as HTMLDocument;
 
             if (document == null)
                 return;
 
-            var styleSheet = document.createStyleSheet("", 0);
-
-            styleSheet.cssText = @"
-                h2   {color: blue;}
-
-                #content header {
-                    color: #000;
-                    border-bottom: 1px solid #000;
-                    border-top: 5px solid #000;
-                    padding-bottom: 5px;
-                }
-            ";
+            CssStyle.Update(document);
         }
     }
 }

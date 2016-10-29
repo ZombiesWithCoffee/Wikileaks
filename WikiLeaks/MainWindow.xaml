@@ -3,28 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WikiLeaks"
         xmlns:extensions="clr-namespace:Wikileaks.Extensions"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:WikiLeaks.Converters"
+        xmlns:viewModels="clr-namespace:WikiLeaks.ViewModels"
+        xmlns:extensions1="clr-namespace:WikiLeaks.Extensions"
         mc:Ignorable="d"
         Height="{extensions:SettingBinding Height}"
         Width="{extensions:SettingBinding Width}"
         Left="{extensions:SettingBinding Left}"
         Top="{extensions:SettingBinding Top}"
         WindowState="{extensions:SettingBinding WindowState}"        
-        Title="WikiLeaks Viewer">
+        Title="WikiLeaks Viewer"
+        d:DataContext ="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}, IsDesignTimeCreatable=True}"        
+        >
     
     <Window.Resources>
         <Image x:Key="Next" Source="Resources/Button Next.png" />
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
-        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <converters:SignatureValidationToColorConverter x:Key="SignatureValidationToColorConverter" />
     </Window.Resources>
-    
-    <Window.DataContext>
-        <local:MainWindowViewModel />
-    </Window.DataContext>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -69,7 +69,7 @@
         </Grid>
 
         <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BorderBrush="Black">
-            <WebBrowser x:Name="WebBrowser" local:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
+            <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
         </Border>
         
         <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >
@@ -84,7 +84,7 @@
                     <Button Click="Attachment_Click">
                         <Button.Content>
                             <StackPanel>
-                                <Image Source="{Binding ImageSource}" MaxHeight="96" ></Image>
+                                <Image Source="{Binding ImageSource}" MaxHeight="96" MaxWidth="250" ></Image>
                                 <Label Content="{Binding FileName}"></Label>
                             </StackPanel>
                         </Button.Content>
@@ -111,7 +111,7 @@
                 </Style>
             </Grid.Resources>
 
-            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding Validated, Converter={StaticResource BoolToColorConverter}}" />
+            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
             <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
             <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />

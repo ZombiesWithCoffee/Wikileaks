@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using MimeKit;
 using WikiLeaks.Properties;
 
-namespace WikiLeaks{
+namespace WikiLeaks.Models{
 
     public class Attachment{
         public string FileName { get; set; }
@@ -34,7 +34,9 @@ namespace WikiLeaks{
                     case "image/png":
                     case "image/gif":
                     case "image/jpg":
-                    case "image/jpeg": {
+                    case "image/jpeg":
+                    case "image/pjpeg":
+                        {
 
                         var image = Image.FromStream(memory);
                         var bitmap = new Bitmap(image);
@@ -78,6 +80,7 @@ namespace WikiLeaks{
                         return null;
 
                     case "video/x-ms-wmv":
+                    case "video/mp4":
                         attachment.ImageSource = BitmapToImageSource(Resources.Video);
                         break;
 
@@ -93,7 +96,6 @@ namespace WikiLeaks{
                 return attachment;
             }
         }
-
 
         static BitmapImage BitmapToImageSource(Image bitmap) {
             using (var memory = new MemoryStream()) {

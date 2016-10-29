@@ -1,14 +1,13 @@
 ﻿using System;
-using System.IO;
-using System.Net;
+using System.ComponentModel.Composition;
 using System.Threading;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
-using WikiLeaks.Properties;
 
-namespace WikiLeaks {
+namespace WikiLeaks.Services {
 
+    [Export(typeof(IDkimPublicKeyLocator))]
     public class DkimLocator : IDkimPublicKeyLocator {
 
         public AsymmetricKeyParameter LocatePublicKey(string methods, string domain, string selector, CancellationToken cancellationToken = new CancellationToken()) {
@@ -16,9 +15,6 @@ namespace WikiLeaks {
             var dnsLookup = $"{selector}._domainkey.{domain}";
 
             var publicKey = GetPublicKey(dnsLookup);
-
-            if (publicKey == null)
-                return null;
 
             return PublicKeyFactory.CreateKey(Convert.FromBase64String(publicKey));
         }
@@ -60,27 +56,44 @@ namespace WikiLeaks {
 
                 // v=DKIM1; k=rsa; n=1024
                 case "ngpweb3._domainkey.bounce.myngp.com":
-                    return "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD+FZRWRvxNzHH8gasWTJi4+bWRyDSMgEI7XOwAzUyrrvwz4QZ4lDtOwQVAmkqxUiyf5YkufT6+5h15wmR0f82JwqwT1vMjOUNS/Kausds5aBJiu2GFsIFrwXBUFf2Hp81yRzWQ56XoP+QTYJDk7Q3NRRGg17QfOZSDfPZCMICFVwIDAQAB";
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD+FZRWRvxNzHH8gasWTJi4+bWRyDSMgEI7XOwAzUyrrvwz4QZ4lDtOwQVAmkqxUiyf5YkufT6+5h15wmR0f82JwqwT1vMjOUNS/Kausds5aBJiu2GFsIFrwXBUFf2Hp81yRzWQ56XoP+QTYJDk7Q3NRRGg17QfOZSDfPZCMICFVwIDAQAB";
+
+                case "selector1-gulaw-onmicrosoft-com._domainkey.gulaw.onmicrosoft.com":
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCyr0dF0wDuUlztKsCjtL65ITEYNaMD3QoSM8JosRlPsYzTnDM2J6/lU2mnjJNeurQIjehLwQT20L0SfyyE5QWIkLoN3wfac12PXN382S79GpYXgtFG39mYCXN5t/hKhud4qG18ZkJmsDlow7TkQo7z3TITP2gmF3BN6/B61SbpWQIDAQAB";
+
+                case "bdk._domainkey.bronto.com":
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC6Y8MQmVwMUsVyl9zN6P7s1FYDOJVEpjsK/CexZlsDHuchu730LYEH3CC9sSAAR5Bt6Kws1djfYqfXouxzP1IJDVxrzxKQ+f91lS1RYnh+1wX06nYGZYYXcGMfEKKpASRoo1tJyo5Shz6+pnnN93hNWOe5Rh9Umq56DYwKoFnTPQIDAQAB";
+
+                case "ngpweb1._domainkey.bounce.myngp.com":
+                    return @"MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAP8GA3mvMMWjkJ9CQTE5115ZuwHUwpKaK/34OjPx6sU4+KV7px+9DQf/zf6LByfPkB6TnrjMgYae1CEkfwgGbPMCAwEAAQ==";
+
+                case "20150623._domainkey.mercedesberk-com.20150623.gappssmtp.com":
+                    return @"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2UMfREvlgajdSp3jv1tJ9nLpi/mRYnGyKC3inEQ9a7zqUjLq/yXukgpXs9AEHlvBvioxlgAVCPQQsuc1xp9+KXQGgJ8jTsn5OtKm8u+YBCt6OfvpeCpvt0l9JXMMHBNYV4c0XiPE5RHX2ltI0Av20CfEy+vMecpFtVDg4rMngjLws/ro6qT63S20A4zyVs/V19WW5F2Lulgv+l+EJzz9XummIJHOlU5n5ChcWU3Rw5RVGTtNjTZnFUaNXly3fW0ahKcG5Qc3e0Rhztp57JJQTl3OmHiMR5cHsCnrl1VnBi3kaOoQBYsSuBm+KRhMIw/X9wkLY67VLdkrwlX3xxsp6wIDAQAB";
+
+                case "20120806._domainkey.googlegroups.com":
+                    return @"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzb2fhKQxJYmlF+PNnOExrd8kRMlV2b/GBb1mw4vpTGDVS8wD+6k8TEXSSsaS2B4uOrOfKBWBb6lMVbVmi/zy3Jc+YP5XkEt09UtXm4HWeAqgu0arqCmjH6yhbUGlPipIqVQMmWy5jnWJsHioAAN8G5S5t5qrCRzxv7ntDOOUhwEPCIIrfncOgBzF4XdJPiuanUNOX5Jw5Q2H3wcOmBTKQ3t0ETvPYK/cqpe7rJ+4L06+QKE2kk/WDuHuxtSZbZUo2U6kM56CGxdvBiNRfPLoMFnMddCQqXYJsJZJHfwBnLQxFwbkZS0idkSWLf8AUKbB0lVWQe4+F0M1CeOj8YimmQIDAQAB";
+
+                case "selector1._domainkey.mta-poolbbcs02.cluster3.convio.net":
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCfRB/KQvEh8nkrIkbyeN5OXCrLUWa8yUk30YZKC/5sobLRo2eSTG4kHK5tBByLiHo4pnk0SNd5WDdX4kQT+O5+NRLdettms3R+PKhTlcKt9bvI3dNK/taV2oaFTV0PJay9pOUSG1hhJ5tae6slI96kW1vWrIDmhIeCCIcV4Tn5bwIDAQAB";
+
+                case "s2048._domainkey.yahoo.com":
+                    return @"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuoWufgbWw58MczUGbMv176RaxdZGOMkQmn8OOJ/HGoQ6dalSMWiLaj8IMcHC1cubJx2gziAPQHVPtFYayyLA4ayJUSNk10/uqfByiU8qiPCE4JSFrpxflhMIKV4bt+g1uHw7wLzguCf4YAoR6XxUKRsAoHuoF7M+v6bMZ/X1G+viWHkBl4UfgJQ6O8F1ckKKoZ5KqUkJH5pDaqbgs+F3PpyiAUQfB6EEzOA1KMPRWJGpzgPtKoukDcQuKUw9GAul7kSIyEcizqrbaUKNLGAmz0elkqRnzIsVpz6jdT1/YV5Ri6YUOQ5sN5bqNzZ8TxoQlkbVRy6eKOjUnoSSTmSAhwIDAQAB";
+
+                case "k1._domainkey.mail49.wdc01.mcdlv.net":
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbNrX2cY/GUKIFx2G/1I00ftdAj713WP9AQ1xir85i89sA2guU0ta4UX1Xzm06XIU6iBP41VwmPwBGRNofhBVR+e6WHUoNyIR4Bn84LVcfZE20rmDeXQblIupNWBqLXM1Q+VieI/eZu/7k9/vOkLSaQQdml4Cv8lb3PcnluMVIhQIDAQAB";
+
+                case "key1024._domainkey.birthdayalarm.com":
+                    return @"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDlJ84dZvbOtcAMouetNcKUXI/UrzThX7OBt3b480ntOwRkZb8yuVivGnvh0HElq4uxQAGCCNNYkLMW4XkNtNvk3c22Xx++rL4ncDchD0RDVEzPptzUfC9C5wu1TaPAqWvuMRhfkQfJZojsMIJ5NwiDI8faSYByIWqXFyH/KiUf/wIDAQAB";
 
                 // Non existant domains
                 case "beta._domainkey.googlegroups.com":
                 case "smtpapi._domainkey.email.nationbuilder.com":
                 case "gamma._domainkey.gmail.com":
-                    return null;
+                    throw new InvalidOperationException("The public key doesn't exist");
 
                 default:
-                    return null;
+                    throw new InvalidOperationException("The DNS hasn't been looked up yet.");
             }
-
-        }
-
-        public static Stream GenerateStreamFromString(string s) {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
         }
     }
 }
