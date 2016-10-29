@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WikiLeaks.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Website" Type="System.String" Scope="Application">
+    <Setting Name="Domain" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://wikileaks.org/</Value>
     </Setting>
-    <Setting Name="Repository" Type="System.String" Scope="Application">
+    <Setting Name="Repository" Type="System.String" Scope="User">
       <Value Profile="(Default)">podesta-emails</Value>
     </Setting>
-    <Setting Name="Action" Type="System.String" Scope="Application">
+    <Setting Name="Action" Type="System.String" Scope="User">
       <Value Profile="(Default)">emailid</Value>
     </Setting>
     <Setting Name="Top" Type="System.Double" Scope="User">

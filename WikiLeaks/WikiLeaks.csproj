@@ -123,6 +123,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Abstract\ICssStyle.cs" />
+    <Compile Include="Dialogs\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Enums\SignatureValidation.cs" />
     <Compile Include="Models\Attachment.cs" />
     <Compile Include="Converters\SignatureValidationToColorConverter.cs" />
@@ -137,6 +140,11 @@
     </Compile>
     <Compile Include="Abstract\IEmailValidation.cs" />
     <Compile Include="Extensions\WebBrowserBehaviors.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Page Include="Dialogs\SettingsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

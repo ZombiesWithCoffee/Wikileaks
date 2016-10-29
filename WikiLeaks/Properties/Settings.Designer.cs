@@ -23,30 +23,39 @@ namespace WikiLeaks.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://wikileaks.org/")]
-        public string Website {
+        public string Domain {
             get {
-                return ((string)(this["Website"]));
+                return ((string)(this["Domain"]));
+            }
+            set {
+                this["Domain"] = value;
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("podesta-emails")]
         public string Repository {
             get {
                 return ((string)(this["Repository"]));
             }
+            set {
+                this["Repository"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("emailid")]
         public string Action {
             get {
                 return ((string)(this["Action"]));
+            }
+            set {
+                this["Action"] = value;
             }
         }
         
