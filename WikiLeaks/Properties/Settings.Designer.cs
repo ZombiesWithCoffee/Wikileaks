@@ -130,5 +130,65 @@ namespace WikiLeaks.Properties {
                 this["DocumentNo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int StartId {
+            get {
+                return ((int)(this["StartId"]));
+            }
+            set {
+                this["StartId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("35000")]
+        public int EndId {
+            get {
+                return ((int)(this["EndId"]));
+            }
+            set {
+                this["EndId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CacheFolder {
+            get {
+                return ((string)(this["CacheFolder"]));
+            }
+            set {
+                this["CacheFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FilterFolder {
+            get {
+                return ((string)(this["FilterFolder"]));
+            }
+            set {
+                this["FilterFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ResultsFolder {
+            get {
+                return ((string)(this["ResultsFolder"]));
+            }
+            set {
+                this["ResultsFolder"] = value;
+            }
+        }
     }
 }

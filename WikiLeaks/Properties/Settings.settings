@@ -29,5 +29,20 @@
     <Setting Name="DocumentNo" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">25000</Value>
     </Setting>
+    <Setting Name="StartId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="EndId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">35000</Value>
+    </Setting>
+    <Setting Name="CacheFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FilterFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ResultsFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

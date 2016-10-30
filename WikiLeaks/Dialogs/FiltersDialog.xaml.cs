@@ -4,12 +4,12 @@ using WikiLeaks.ViewModels;
 namespace WikiLeaks.Dialogs {
 
     /// <summary>
-    /// Interaction logic for SettingsDialog.xaml
+    /// Interaction logic for FiltersDialog.xaml
     /// </summary>
 
-    public partial class SettingsDialog {
+    public partial class FiltersDialog {
 
-        public SettingsDialog() {
+        public FiltersDialog() {
             InitializeComponent();
 
             App.Container?.SatisfyImportsOnce(this);
@@ -18,9 +18,9 @@ namespace WikiLeaks.Dialogs {
         }
 
         [Import]
-        public SettingsViewModel ViewModel
+        public FiltersViewModel ViewModel
         {
-            get { return DataContext as SettingsViewModel; }
+            get { return DataContext as FiltersViewModel; }
             set { DataContext = value; }
         }
     }

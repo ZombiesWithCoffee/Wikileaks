@@ -135,12 +135,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Abstract\ICssStyle.cs" />
+    <Compile Include="Abstract\IEmailCache.cs" />
+    <Compile Include="Abstract\IFolderNames.cs" />
+    <Compile Include="Abstract\IEmailOnline.cs" />
+    <Compile Include="Dialogs\FiltersDialog.xaml.cs">
+      <DependentUpon>FiltersDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums\SignatureValidation.cs" />
     <Compile Include="Models\Attachment.cs" />
     <Compile Include="Converters\SignatureValidationToColorConverter.cs" />
+    <Compile Include="Services\FolderNames.cs" />
+    <Compile Include="Services\EmailCache.cs" />
+    <Compile Include="Services\EmailOnline.cs" />
     <Compile Include="Services\DkimLocator.cs" />
     <Compile Include="Extensions\MimeKitExtensions.cs" />
     <Compile Include="Services\EmailValidation.cs" />
@@ -148,10 +157,8 @@
     <Compile Include="Extensions\HtmlEx.cs" />
     <Compile Include="Extensions\SetBindingExtension.cs" />
     <Compile Include="Managers\AppManager.cs" />
-    <Compile Include="Managers\CacheManager.cs" />
     <Compile Include="Managers\DocumentManager.cs" />
     <Compile Include="Managers\FilterManager.cs" />
-    <Compile Include="Models\AppSetting.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\SearchResult.cs" />
@@ -162,7 +169,12 @@
     </Compile>
     <Compile Include="Abstract\IEmailValidation.cs" />
     <Compile Include="Extensions\WebBrowserBehaviors.cs" />
+    <Compile Include="ViewModels\FiltersViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Page Include="Dialogs\FiltersDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\SettingsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

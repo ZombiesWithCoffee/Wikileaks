@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -21,15 +20,18 @@ namespace WikiLeaks.ViewModels {
 
     public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel{
 
-        public MainWindowViewModel(){}
+        public MainWindowViewModel(){
+        }
 
         [ImportingConstructor]
-        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter){
+        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter, IEmailCache emailCache){
             _emailValidation = emailValidation;
             _highlighter = highlighter;
+            _emailCache = emailCache;
         }
 
         readonly IEmailValidation _emailValidation;
+        readonly IEmailCache _emailCache;
         readonly IHighlighter _highlighter;
 
         public void Initialize(){
@@ -116,7 +118,6 @@ namespace WikiLeaks.ViewModels {
 
         SignatureValidation _validated;
 
-        public string MessageUrl => $"https://wikileaks.org/podesta-emails/get/{DocumentNo}";
         public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
 
         #endregion
@@ -144,7 +145,7 @@ namespace WikiLeaks.ViewModels {
             try{
                 Clear();
 
-                var message = await GetMimeMessage();
+                var message = await _emailCache.GetMimeMessageAsync(DocumentNo);
 
                 From = message.From;
                 To = message.To;
@@ -170,17 +171,6 @@ namespace WikiLeaks.ViewModels {
             }
             finally {
                 Mouse.OverrideCursor = Cursors.Arrow;
-            }
-        }
-
-        async Task<MimeMessage> GetMimeMessage(){
-
-            using (var client = new HttpClient()){
-                using (var response = await client.GetAsync(new Uri(MessageUrl))){
-                    var stream = await response.Content.ReadAsStreamAsync();
-
-                    return MimeMessage.Load(stream);
-                }
             }
         }
 

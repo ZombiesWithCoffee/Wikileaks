@@ -17,11 +17,15 @@ namespace WikiLeaks.ViewModels {
 
             Domain = Settings.Default.Domain;
             Repository = Settings.Default.Repository;
+            StartId = Settings.Default.StartId;
+            EndId = Settings.Default.EndId;
         }
 
         public ICommand SaveChanges => new RelayCommand(() =>{
             Settings.Default.Domain = Domain;
             Settings.Default.Repository = Repository;
+            Settings.Default.StartId = StartId;
+            Settings.Default.EndId = EndId;
             Settings.Default.Save();
 
             CloseAction();
@@ -30,6 +34,10 @@ namespace WikiLeaks.ViewModels {
         public string Domain { get; set; }
 
         public string Repository { get; set; }
+
+        public int StartId { get; set; }
+
+        public int EndId { get; set; }
 
         public Action CloseAction { get; set; }
     };
