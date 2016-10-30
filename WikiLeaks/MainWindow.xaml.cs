@@ -43,7 +43,7 @@ namespace WikiLeaks {
             System.Diagnostics.Process.Start(tempFileName);
         }
 
-        void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e){
+        void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e) {
             var webBrowser = sender as WebBrowser;
 
             var document = webBrowser?.Document as HTMLDocument;

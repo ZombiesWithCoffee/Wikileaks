@@ -9,10 +9,10 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
 using WikiLeaks.Abstract;
+using WikiLeaks.Dialogs;
 using WikiLeaks.Enums;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
-using WikiLeaks.Services;
 
 namespace WikiLeaks.ViewModels {
 
@@ -44,6 +44,11 @@ namespace WikiLeaks.ViewModels {
         public ICommand PreviousCommand => new RelayCommand(() =>
         {
             DocumentNo--;
+        });
+
+        public ICommand SettingsCommand => new RelayCommand(() =>{
+            var dialog = new SettingsDialog();
+            dialog.ShowDialog();
         });
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());

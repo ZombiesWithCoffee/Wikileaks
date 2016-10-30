@@ -17,7 +17,7 @@
         Title="WikiLeaks Viewer"
         d:DataContext ="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}, IsDesignTimeCreatable=True}"        
         >
-    
+
     <Window.Resources>
         <Image x:Key="Next" Source="Resources/Button Next.png" />
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
@@ -25,7 +25,7 @@
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
         <converters:SignatureValidationToColorConverter x:Key="SignatureValidationToColorConverter" />
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -33,7 +33,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
-        
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -55,11 +55,13 @@
                     <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
                 </Style>
             </Grid.Resources>
-            
+
             <Label Content="From:" />
             <TextBlock Text="{Binding From}" Grid.Row="0" Grid.Column="1" />
             <Label Content="To:" Grid.Row="1" Grid.Column="0" />
-            <TextBlock Text="{Binding To}" Grid.Row="1" Grid.Column="1" />
+            <ScrollViewer Grid.Row="1" Grid.Column="1" MaxHeight="200">
+                <TextBlock Text="{Binding To}" />
+            </ScrollViewer>
             <Label Content="CC:" Grid.Row="2" Grid.Column="0" />
             <TextBlock Text="{Binding Cc}" Grid.Row="2" Grid.Column="1" />
             <Label Content="Subject:" Grid.Row="3" Grid.Column="0" />
@@ -68,17 +70,32 @@
             <TextBlock Text="{Binding Date}" Grid.Row="4" Grid.Column="1" />
         </Grid>
 
-        <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BorderBrush="Black">
-            <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
-        </Border>
-        
+        <TabControl Grid.Row="1" Margin="5">
+
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Formatted HTML">
+                <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
+            </TabItem>
+            <TabItem Header="Raw Text">
+                <ScrollViewer>
+                    <TextBlock Text="{Binding HtmlString}" FontWeight="Normal"/>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
         <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Button Click="Attachment_Click">
@@ -92,12 +109,13 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
+
         <Grid Grid.Row="3" Background="Azure" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="0"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
@@ -113,10 +131,11 @@
 
             <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
-            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
-            <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
-            <Button Grid.Column="5" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
-            <Button Grid.Column="6" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
+            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding SettingsCommand}" />
+            <Button Grid.Column="4" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
+            <Button Grid.Column="5" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
+            <Button Grid.Column="6" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
+            <Button Grid.Column="7" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
         </Grid>
     </Grid>
 </Window>
