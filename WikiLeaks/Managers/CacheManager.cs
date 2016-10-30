@@ -9,6 +9,7 @@ using WikiLeaks.Extensions;
 
 namespace WikiLeaks.Managers
 {
+    /*
     public  class CacheManager
     {
         private MainWindow _mainWindow = null;
@@ -108,4 +109,5 @@ namespace WikiLeaks.Managers
             return true;
         }
     }
+    */
 }

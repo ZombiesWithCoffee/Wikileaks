@@ -1,22 +1,19 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WikiLeaks.Extensions;
 using WikiLeaks.Models;
 
 namespace WikiLeaks.Managers
 {
+    /*
     public class AppManager
     {
         public AppSetting Settings { get; set; }
 
-        private MainWindow _mainWindow = null;
+        private MainWindow _mainWindow;
 
         public AppManager(MainWindow wnd, string pathToFile)
         {
@@ -90,12 +87,12 @@ namespace WikiLeaks.Managers
             
             try
             {
-                using (FileStream fs = File.Create(pathToFile))
+                using (var fs = File.Create(pathToFile))
                 {
-                    string dataasstring = JsonConvert.SerializeObject(Settings);
-                    byte[] info = new UTF8Encoding(true).GetBytes(dataasstring);
+                    var dataasstring = JsonConvert.SerializeObject(Settings);
+                    var info = new UTF8Encoding(true).GetBytes(dataasstring);
                     fs.Write(info, 0, info.Length);
-                    byte[] data = new byte[] { 0x0 };
+                    var data = new byte[] { 0x0 };
                     fs.Write(data, 0, data.Length);
                 }
             }
@@ -108,4 +105,5 @@ namespace WikiLeaks.Managers
             return true;
         }
     }
+    */
 }

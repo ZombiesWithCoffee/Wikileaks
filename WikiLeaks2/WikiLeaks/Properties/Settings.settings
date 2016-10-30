@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WikiLeaks.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Domain" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://wikileaks.org/</Value>
+    </Setting>
+    <Setting Name="Repository" Type="System.String" Scope="User">
+      <Value Profile="(Default)">podesta-emails</Value>
+    </Setting>
+    <Setting Name="Action" Type="System.String" Scope="User">
+      <Value Profile="(Default)">emailid</Value>
+    </Setting>
+    <Setting Name="Top" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="Left" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="Height" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">700</Value>
+    </Setting>
+    <Setting Name="Width" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1200</Value>
+    </Setting>
+    <Setting Name="WindowState" Type="System.Windows.WindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="DocumentNo" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25000</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

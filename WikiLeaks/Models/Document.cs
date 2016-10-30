@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WikiLeaks.Models
 {
+    /*
     public class Document
     {
         public int LeakId { get; set; }
@@ -20,4 +17,5 @@ namespace WikiLeaks.Models
 
         public DateTime DocDate { get; set; }
     }
+    */
 }

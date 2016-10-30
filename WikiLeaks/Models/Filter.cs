@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-
-namespace WikiLeaks.Models
+﻿namespace WikiLeaks.Models
 {
+    /*
     public class Filter
     {
         public string Name { get; set; }
@@ -16,4 +14,5 @@ namespace WikiLeaks.Models
 
         public int Priority { get; set; }
     }
+    */
 }

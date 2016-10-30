@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using WikiLeaks.Abstract;
 
 namespace WikiLeaks.Services {
 

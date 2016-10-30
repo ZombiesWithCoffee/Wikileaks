@@ -200,10 +200,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="App_Data\default.appsettings.json" />
-    <None Include="App_Data\Filters\hillary.json" />
-    <None Include="App_Data\Filters\soros.json" />
-    <None Include="App_Data\Filters\soros_companies.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -276,10 +272,7 @@
   <ItemGroup>
     <None Include="Resources\WikiLeaks.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\Cache\Attachments\" />
-    <Folder Include="App_Data\SearchResults\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

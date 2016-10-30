@@ -9,21 +9,24 @@
         xmlns:viewModels="clr-namespace:WikiLeaks.ViewModels"
         xmlns:extensions1="clr-namespace:WikiLeaks.Extensions"
         mc:Ignorable="d"
-        Title="WikiLeaks Viewer" d:DesignWidth="1234" Height="738"   
-    >
+        Height="{extensions:SettingBinding Height}"
+        Width="{extensions:SettingBinding Width}"
+        Left="{extensions:SettingBinding Left}"
+        Top="{extensions:SettingBinding Top}"
+        WindowState="{extensions:SettingBinding WindowState}"        
+        Title="WikiLeaks Viewer"
+        d:DataContext ="{d:DesignInstance {x:Type viewModels:MainWindowViewModel}, IsDesignTimeCreatable=True}"        
+        >
 
     <Window.Resources>
         <Image x:Key="Next" Source="Resources/Button Next.png" />
         <Image x:Key="Prev" Source="Resources/Button Previous.png" />
         <Image x:Key="Refresh" Source="Resources/Refresh.png" />
         <Image x:Key="Wikileaks" Source="Resources/Wikileaks.png" />
+        <converters:SignatureValidationToColorConverter x:Key="SignatureValidationToColorConverter" />
     </Window.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="0*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -31,11 +34,10 @@
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.ColumnSpan="2" Margin="10,0,-10,0">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -54,7 +56,39 @@
                 </Style>
             </Grid.Resources>
 
+            <Label Content="From:" />
+            <TextBlock Text="{Binding From}" Grid.Row="0" Grid.Column="1" />
+            <Label Content="To:" Grid.Row="1" Grid.Column="0" />
+            <ScrollViewer Grid.Row="1" Grid.Column="1" MaxHeight="200">
+                <TextBlock Text="{Binding To}" />
+            </ScrollViewer>
+            <Label Content="CC:" Grid.Row="2" Grid.Column="0" />
+            <TextBlock Text="{Binding Cc}" Grid.Row="2" Grid.Column="1" />
+            <Label Content="Subject:" Grid.Row="3" Grid.Column="0" />
+            <TextBlock Text="{Binding Subject}" Grid.Row="3" Grid.Column="1" />
+            <Label Content="Date:" Grid.Row="4" Grid.Column="0" />
+            <TextBlock Text="{Binding Date}" Grid.Row="4" Grid.Column="1" />
         </Grid>
+
+        <TabControl Grid.Row="1" Margin="5">
+
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Formatted HTML">
+                <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
+            </TabItem>
+            <TabItem Header="Raw Text">
+                <ScrollViewer>
+                    <TextBlock Text="{Binding HtmlString}" FontWeight="Normal"/>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
         <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -85,6 +119,7 @@
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="48"/>
             </Grid.ColumnDefinitions>
 
             <Grid.Resources>
@@ -94,109 +129,13 @@
                 </Style>
             </Grid.Resources>
 
-            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" />
+            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
             <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
-            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
-            <Button Grid.Column="4" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
-            <Button Grid.Column="5" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
-            <Button Grid.Column="6" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
+            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding SettingsCommand}" />
+            <Button Grid.Column="4" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
+            <Button Grid.Column="5" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
+            <Button Grid.Column="6" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
+            <Button Grid.Column="7" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
         </Grid>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="616" Margin="288,0,0,0" VerticalAlignment="Top" Width="904" >
-
-            <TabItem Header="Detail">
-                <Grid Background="#FFE5E5E5" Margin="5,101,6,18" RenderTransformOrigin="0.5,0.5">
-
-                    <Grid.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="0.046"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Grid.RenderTransform>
-                    <Label Content="From:" RenderTransformOrigin="6.92,2.333" Height="24" Margin="1,-103,842,543" />
-                    <Label Content="To:" Height="24" Width="50" Margin="13,-83,820,523" />
-                    <Label Content="CC:" Height="24" Width="50" Margin="13,-63,820,503" />
-                    <Label Content="Subject:" Height="24" Width="50" Margin="-11,-44,844,484" />
-                    <Label Content="Date:" Height="24" Width="37" Margin="425,-103,421,543" RenderTransformOrigin="0.777,-6.986" />
-                    <TextBlock Text="{Binding From}"   Background="White" Margin="35,-98,458,547" RenderTransformOrigin="-0.002,1.009" />
-                    <TextBlock Text="{Binding To}"   Background="White" Margin="35,-79,236,528" RenderTransformOrigin="0.327,0.527" />
-                    <TextBlock Text="{Binding Cc}"  Background="White" Margin="35,-59,236,508" />
-                    <TextBlock Text="{Binding Subject}" Background="White" Margin="35,-39,236,488" />
-                    <TextBlock Text="{Binding Date}" Background="White" Margin="467,-98,236,547" />
-                    <Border BorderThickness="2" CornerRadius="3" BorderBrush="Black" Margin="0,10,10,0" Grid.Column="1" Grid.ColumnSpan="4">
-                        <WebBrowser x:Name="WebBrowser"  LoadCompleted="WebBrowser_OnLoadCompleted" Margin="8,8,0,8" />
-                    </Border>
-                </Grid>
-            </TabItem>
-            <TabItem Header="App Settngs" HorizontalAlignment="Right" Width="90" Margin="0,-2">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10*"/>
-                        <ColumnDefinition Width="75*"/>
-                        <ColumnDefinition Width="19*"/>
-                        <ColumnDefinition Width="19*"/>
-                        <ColumnDefinition Width="771*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="lblBaseUrlSetting" Content="Base URL" HorizontalAlignment="Left" Margin="1.683,61,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-                    <TextBox x:Name="txtBaseUrlSetting" HorizontalAlignment="Left" Height="23" Margin="2,82,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="872" Grid.ColumnSpan="4" Grid.Column="1" />
-                    <Label x:Name="lblLeakStartIdSetting" Content="Start ID" HorizontalAlignment="Left" Margin="7,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label x:Name="lblLeakEndIdSetting" Content="End ID" HorizontalAlignment="Left" Margin="26,7,0,0" VerticalAlignment="Top" Grid.Column="4"/>
-                    <TextBox x:Name="txtLeakStartIdSetting" HorizontalAlignment="Left" Height="23" Margin="8,30,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="5"/>
-                    <TextBox x:Name="txtLeakEndIdSetting" HorizontalAlignment="Left" Height="23" Margin="26,30,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.Column="4"/>
-                    <Button x:Name="btnSaveAppSettings" Content="Save" HorizontalAlignment="Left" Margin="2,222,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveAppSettings_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
-                    <Label x:Name="lblCacheFolder" Content="Cache Folder" HorizontalAlignment="Left" Margin="0,110,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-                    <TextBox x:Name="txtCachFolder" HorizontalAlignment="Left" Height="23" Margin="8,133,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="876" Grid.ColumnSpan="5"/>
-                    <Label x:Name="lblSearchResultsFolder" Content="Search Results" Grid.Column="1" HorizontalAlignment="Left" Margin="0,161,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.23,-0.161"/>
-                    <TextBox x:Name="txtSearchResultsFolder" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="10,184,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="864" Grid.ColumnSpan="4"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Filters" Margin="2,-2,-29,-2">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10*"/>
-                        <ColumnDefinition Width="75*"/>
-                        <ColumnDefinition Width="19*"/>
-                        <ColumnDefinition Width="19*"/>
-                        <ColumnDefinition Width="771*"/>
-                    </Grid.ColumnDefinitions>
-                    <ListView x:Name="lstFilters" SelectionChanged="lstFilters_SelectionChanged"  Grid.Column="1" HorizontalAlignment="Left" Height="492" Margin="10,83,0,0" VerticalAlignment="Top" Width="864" Grid.ColumnSpan="4">
-                        <ListView.View>
-                            <GridView >
-                                <GridViewColumn Header="Color"   DisplayMemberBinding="{Binding HighlightColor}"  />
-                                <GridViewColumn Header="Priority"   DisplayMemberBinding="{Binding Priority}"  />
-                                <GridViewColumn Header="Name"   DisplayMemberBinding="{Binding Name}"   />
-                                <GridViewColumn Header="Search Terms"   DisplayMemberBinding="{Binding SearchTokens}"   />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <TextBox x:Name="txtFilterPriority" Grid.Column="4" HorizontalAlignment="Right" Height="23" Margin="0,31,694,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50"/>
-                    <TextBox x:Name="txtFilterName" Grid.Column="4" HorizontalAlignment="Left" Height="23" Margin="84,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="153"/>
-                    <TextBox x:Name="txtFilterSearchTokens" Grid.Column="4" HorizontalAlignment="Left" Height="23" Margin="242,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="524"/>
-                    <Label x:Name="lblFilterPriority" Content="Priority" Grid.Column="4" HorizontalAlignment="Left" Margin="27,6,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.359,0.662"/>
-                    <Label x:Name="lblFilterName" Content="Name" Grid.Column="4" HorizontalAlignment="Left" Margin="86,8,0,0" VerticalAlignment="Top"/>
-                    <Label x:Name="lblSearchTokens" Content="Search Terms (csv)" Grid.Column="4" HorizontalAlignment="Left" Margin="242,6,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="txtFilterHighlightColor" Grid.Column="1" HorizontalAlignment="Right" Height="23" Margin="0,31,754,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="4"/>
-                    <Label x:Name="lblFilterHighlightColor" Content="Highlight Color" Grid.Column="1" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnDeleteFilter" Content="Delete" Grid.Column="4" HorizontalAlignment="Left" Margin="674,58,0,0" VerticalAlignment="Top" Width="75" Click="btnDeleteFilter_Click"/>
-                    <Button x:Name="btnSaveFilter" Content="Save" Grid.Column="4" HorizontalAlignment="Left" Margin="271,58,0,0" VerticalAlignment="Top" Width="75" Click="btnSaveFilter_Click" RenderTransformOrigin="0.403,-0.871"/>
-                    <Button x:Name="btnAddFilter" Content="Add" Grid.Column="4" HorizontalAlignment="Left" Margin="479,58,0,0" VerticalAlignment="Top" Width="75" Click="btnAddFilter_Click"/>
-                </Grid>
-            </TabItem>
-
-
-
-        </TabControl>
-        <Label x:Name="lblLeakStartId" Content="Start ID" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.625,0.217" Margin="10,0,0,0" Height="23" Width="48"/>
-        <Label x:Name="lblLeakEndId" Content="End ID" HorizontalAlignment="Left" Margin="135,1,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.814,0.609" Height="23" Width="43"/>
-        <TextBox x:Name="txtLeakStartId" HorizontalAlignment="Left" Height="23" Margin="10,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtLeakEndId" HorizontalAlignment="Left" Height="23" Margin="135,24,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <TreeView x:Name="tvwSearchResults" SelectedItemChanged="tvwSearchResults_SelectedItemChanged" HorizontalAlignment="Left" Height="499" Margin="10,84,0,0" VerticalAlignment="Top" Width="259"/>
-        <Button x:Name="btnSearch" Content="Search"  HorizontalAlignment="Left" Margin="194,591,0,0" VerticalAlignment="Top" Width="75" Click="btnSearch_Click" Height="20"/>
-        <Button x:Name="btnCancelSearch" Content="Cancel" HorizontalAlignment="Left" Margin="101,591,0,0" VerticalAlignment="Top" Width="75" Click="btnCancelSearch_Click" Height="20"/>
-        <RadioButton x:Name="rdoFilterView"  Click="rdoFilterView_Click" GroupName="ResultView" Content="Filters" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.5,-4.231" Height="13" Width="44"/>
-        <RadioButton x:Name="rdoResultsView" Click="rdoResultsView_Click" GroupName="ResultView" Content="Results" HorizontalAlignment="Left" Margin="59,66,0,0" VerticalAlignment="Top" Height="13" Width="50"/>
-        <RadioButton x:Name="rdoCacheView"   Click="rdoCacheView_Click" GroupName="ResultView" Content="Cache" HorizontalAlignment="Left" Margin="114,66,0,0" VerticalAlignment="Top" Height="13" Width="44"/>
-        <RadioButton x:Name="rdoAttachmentsView" Click="rdoAttachmentsView_Click"   GroupName="ResultView" Content="Attachments" HorizontalAlignment="Left" Margin="166,66,0,0" VerticalAlignment="Top" Height="13" Width="76"/>
     </Grid>
 </Window>

@@ -13,7 +13,6 @@ using WikiLeaks.Dialogs;
 using WikiLeaks.Enums;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
-using WikiLeaks.Services;
 
 namespace WikiLeaks.ViewModels {
 

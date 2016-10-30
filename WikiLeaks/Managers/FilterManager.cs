@@ -10,6 +10,7 @@ using WikiLeaks.Models;
 
 namespace WikiLeaks.Managers
 {
+    /*
     public class FilterManager
     {
         private MainWindow _mainWindow = null;
@@ -183,4 +184,5 @@ namespace WikiLeaks.Managers
             return Filters.FirstOrDefault(lf => lf.Name == name);
         }
     }
+    */
 }

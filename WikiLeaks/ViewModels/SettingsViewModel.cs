@@ -32,7 +32,5 @@ namespace WikiLeaks.ViewModels {
         public string Repository { get; set; }
 
         public Action CloseAction { get; set; }
-//         if ( vm.CloseAction == null )
-//        vm.CloseAction = new Action(this.Close);
     };
 }

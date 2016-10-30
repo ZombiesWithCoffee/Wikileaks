@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace WikiLeaks.Extensions
 {
+    /*
     public static class HtmlEx
     {
         public static string FixHtml(this string html)
@@ -50,6 +51,6 @@ namespace WikiLeaks.Extensions
             return hexColor;
 
         }
-
     }
+    */
 }

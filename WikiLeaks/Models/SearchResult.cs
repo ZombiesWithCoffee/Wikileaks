@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WikiLeaks.Models
 {
+    /*
     public class SearchResult
     {
         public string FilterName { get; set; }
@@ -17,7 +14,7 @@ namespace WikiLeaks.Models
         //string is search term.
         //int is cound
         //keeps track if search term was found in doc. how effective the search term is..
-           public Dictionary<string, int> SearchTermHitCount = new Dictionary<string, int>();
+        public Dictionary<string, int> SearchTermHitCount = new Dictionary<string, int>();
 
         //float is leak id
         //int is count
@@ -29,4 +26,5 @@ namespace WikiLeaks.Models
         public string Document { get; set; }
 
     }
+    */
 }

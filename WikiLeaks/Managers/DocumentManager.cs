@@ -14,6 +14,7 @@ using WikiLeaks.Models;
 
 namespace WikiLeaks.Managers
 {
+    /*
     public class DocumentManager
     {
         private AppManager _application = null;
@@ -281,7 +282,6 @@ namespace WikiLeaks.Managers
             return File.ReadAllText(pathToFile);
            
         }
-
-
     }
+    */
 }
