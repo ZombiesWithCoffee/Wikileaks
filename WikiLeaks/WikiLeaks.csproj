@@ -184,7 +184,6 @@
     <Compile Include="Abstract\IMainWindowViewModel.cs" />
     <Compile Include="Services\ClassHighlighter.cs" />
     <Compile Include="Services\CssStyle.cs" />
-    <Compile Include="Services\Highlighter.cs" />
     <Compile Include="Abstract\IHighlighter.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -272,7 +271,14 @@
   <ItemGroup>
     <None Include="Resources\WikiLeaks.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Back-48.png" />
+    <Resource Include="Resources\Forward-48.png" />
+    <Resource Include="Resources\Refresh-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Settings-48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
