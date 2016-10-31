@@ -53,6 +53,7 @@ namespace WikiLeaks.ViewModels {
         public ICommand SettingsCommand => new RelayCommand(() =>{
             var dialog = new SettingsDialog();
             dialog.ShowDialog();
+            RefreshPageAsync();
         });
 
         public List<Highlight> Highlights { get; set; } = new List<Highlight> { new Highlight { Name = "Test" }};

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.Collections.Specialized;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
 using System.Windows;
@@ -26,6 +27,11 @@ namespace WikiLeaks {
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
 
+            if (Settings.Default.SearchTerms == null)
+            {
+                Settings.Default.SearchTerms = Settings.Default.DefaultTerms;
+                Settings.Default.Save();
+            }
             try {
                 ComposeMef();
             }

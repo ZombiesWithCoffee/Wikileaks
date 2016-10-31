@@ -1,18 +1,20 @@
 ﻿using System.ComponentModel.Composition;
+using System.Text.RegularExpressions;
 using WikiLeaks.Abstract;
+using WikiLeaks.Properties;
+using WikiLeaks.ViewModels;
 
 namespace WikiLeaks.Services {
 
     [Export(typeof(IHighlighter))]
     public class ClassHighlighter : IHighlighter{
 
-        readonly string[] _searchTerms = {"CVC", "Clinton", "Emergency", "Foundation", "HRC", "Health", "Hillary", "KSA", "Login",
-            "Mills", "Obama", "Pagliano", "Password", "Podesta", "Potus", "Qatar", "Saudi", "Soros", "Striker", "Turi",
-            "Urgent", "Username", "WJC" };
+      
 
-        public string HighlightSearchTerms(string text){
-            foreach (var term in _searchTerms)
-                text = text.Replace(term, HighlightName(term));
+        public string HighlightSearchTerms(string text)
+        {
+            foreach (var term in Settings.Default.SearchTerms)
+                text = Regex.Replace(text, $@"{term}", HighlightName(term), RegexOptions.IgnoreCase);
 
             return text;
         }
