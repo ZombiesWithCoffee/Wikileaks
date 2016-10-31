@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using WikiLeaks.Abstract;
+using WikiLeaks.Properties;
 
 namespace WikiLeaks.Services {
 
@@ -20,6 +21,11 @@ namespace WikiLeaks.Services {
                     Directory.CreateDirectory(path);
 
                 path = Path.Combine(path, "Cache");
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                path = Path.Combine(path, Settings.Default.Repository);
 
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);

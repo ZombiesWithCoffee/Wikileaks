@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using WikiLeaks.Dialogs;
 using WikiLeaks.Enums;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
+using Xceed.Wpf.Toolkit;
 
 namespace WikiLeaks.ViewModels {
 
@@ -52,6 +54,8 @@ namespace WikiLeaks.ViewModels {
             var dialog = new SettingsDialog();
             dialog.ShowDialog();
         });
+
+        public List<Highlight> Highlights { get; set; } = new List<Highlight> { new Highlight { Name = "Test" }};
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
 
@@ -118,7 +122,7 @@ namespace WikiLeaks.ViewModels {
 
         SignatureValidation _validated;
 
-        public string Url => $"https://wikileaks.org/podesta-emails/emailid/{DocumentNo}";
+        public string Url => $"https://wikileaks.org/{Settings.Default.Repository}/emailid/{DocumentNo}";
 
         #endregion
 

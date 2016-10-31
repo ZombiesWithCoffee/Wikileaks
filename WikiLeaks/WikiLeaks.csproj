@@ -138,6 +138,9 @@
     <Compile Include="Abstract\IEmailCache.cs" />
     <Compile Include="Abstract\IFolderNames.cs" />
     <Compile Include="Abstract\IEmailOnline.cs" />
+    <Compile Include="Dialogs\HighlightDialog.xaml.cs">
+      <DependentUpon>HighlightDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\FiltersDialog.xaml.cs">
       <DependentUpon>FiltersDialog.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,7 @@
     <Compile Include="Enums\SignatureValidation.cs" />
     <Compile Include="Models\Attachment.cs" />
     <Compile Include="Converters\SignatureValidationToColorConverter.cs" />
+    <Compile Include="Models\Highlight.cs" />
     <Compile Include="Services\FolderNames.cs" />
     <Compile Include="Services\EmailCache.cs" />
     <Compile Include="Services\EmailOnline.cs" />
@@ -169,8 +173,13 @@
     </Compile>
     <Compile Include="Abstract\IEmailValidation.cs" />
     <Compile Include="Extensions\WebBrowserBehaviors.cs" />
+    <Compile Include="ViewModels\HighlightViewModel.cs" />
     <Compile Include="ViewModels\FiltersViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Page Include="Dialogs\HighlightDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\FiltersDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

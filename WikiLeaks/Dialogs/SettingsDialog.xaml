@@ -6,7 +6,7 @@
       	xmlns:viewModels="clr-namespace:WikiLeaks.ViewModels"
       	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       	mc:Ignorable="d" 
-        Title="{Binding Title}"
+        Title="Settings"
         WindowStartupLocation="CenterScreen"
         Height="537.712" 
         Width="919.64"
@@ -34,6 +34,9 @@
             <Setter Property="Padding" Value="5" />
         </Style>
         <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="3" />
+        </Style>
+        <Style TargetType="ComboBox">
             <Setter Property="Margin" Value="3" />
         </Style>
         <Style TargetType="xctk:IntegerUpDown">
@@ -75,7 +78,7 @@
                     <Label Content="Domain:" Grid.Row="0" />
                     <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Domain}" />
                     <Label Content="Repository:" Grid.Row="1" Grid.Column="0" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Repository}" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding Repository}" ItemsSource="{Binding Repositories}" SelectedValuePath="Key" DisplayMemberPath="Value" />
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Row="1" Grid.Column="0" Header="Email Range">

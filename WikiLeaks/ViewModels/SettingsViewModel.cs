@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -40,5 +41,9 @@ namespace WikiLeaks.ViewModels {
         public int EndId { get; set; }
 
         public Action CloseAction { get; set; }
+
+        public Dictionary<string, string> Repositories => new Dictionary<string, string>{
+            {"podesta-emails",  "Podesta Emails"}
+        };
     };
 }
