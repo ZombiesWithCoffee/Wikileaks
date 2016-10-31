@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -13,7 +12,6 @@ using WikiLeaks.Dialogs;
 using WikiLeaks.Enums;
 using WikiLeaks.Models;
 using WikiLeaks.Properties;
-using Xceed.Wpf.Toolkit;
 
 namespace WikiLeaks.ViewModels {
 
@@ -50,13 +48,17 @@ namespace WikiLeaks.ViewModels {
             DocumentNo--;
         });
 
-        public ICommand SettingsCommand => new RelayCommand(() =>{
-            var dialog = new SettingsDialog();
-            dialog.ShowDialog();
-            RefreshPageAsync();
+        public ICommand SettingsCommand => new RelayCommand(async() =>{
+            new SettingsDialog().ShowDialog();
+
+            await RefreshPageAsync();
         });
 
-        public List<Highlight> Highlights { get; set; } = new List<Highlight> { new Highlight { Name = "Test" }};
+        public ICommand HighlightCommand => new RelayCommand(async () => {
+            new HighlightDialog().ShowDialog();
+
+            await RefreshPageAsync();
+        });
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
 

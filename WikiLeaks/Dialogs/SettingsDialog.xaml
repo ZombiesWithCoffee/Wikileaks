@@ -7,8 +7,8 @@
       	mc:Ignorable="d" 
         Title="Settings"
         WindowStartupLocation="CenterScreen"
-        Height="537.712" 
-        Width="919.64"
+        Height="409.63" 
+        Width="744.249"
         FontSize="16"
         d:DataContext ="{d:DesignInstance {x:Type viewModels:SettingsViewModel}, IsDesignTimeCreatable=True}" 
         ResizeMode="NoResize" 
@@ -51,49 +51,9 @@
             </Grid.RowDefinitions>
 
 
-            <Grid Grid.Row="0" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="107*"/>
-                    <ColumnDefinition Width="185*"/>
-                </Grid.ColumnDefinitions>
+            <Grid>
 
-                <GroupBox Grid.Column="0" Header="Highlighted Words" >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height=".45*"/>
-                            <RowDefinition Height="6*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height=".6*"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Row="0" Content="Enable Highlighting" FontSize="14" IsChecked="{Binding WillHighlight}" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                        <ListBox Grid.Row="1" ItemsSource="{Binding SearchTerms}" SelectedItem="{Binding SelectedSearchTerm}" IsSynchronizedWithCurrentItem="True" FontSize="14"/>
-
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox Text="{Binding SearchTerm}" Grid.Column="0" />
-                            <Button Content="Add" Command="{Binding AddTerm}" Grid.Column="1" FontSize="16" />
-                        </Grid>
-
-
-
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Button Content="Reset" Command="{Binding ResetTerms}" Grid.Column="0" FontSize="16" />
-                            <Button Content="Delete" Command="{Binding RemoveTerm}" Grid.Column="1" FontSize="16" />
-                        </Grid>
-                        <Label Grid.Row="4" Content="**Warning: Search terms may break HTML formatting." FontSize="12" FontWeight="Normal" Margin="0,0,0,-10"/>
-                    </Grid>
-                </GroupBox>
-
-                <GroupBox Grid.Row="0" Grid.Column="1" Header="Email Source" Height="156" VerticalAlignment="Top">
+                <GroupBox Header="Email Source" Height="156" VerticalAlignment="Top">
                     <Grid Margin="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="190" />
