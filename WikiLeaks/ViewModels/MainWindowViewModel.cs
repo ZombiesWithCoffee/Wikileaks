@@ -49,6 +49,7 @@ namespace WikiLeaks.ViewModels {
         public ICommand SettingsCommand => new RelayCommand(() =>{
             var dialog = new SettingsDialog();
             dialog.ShowDialog();
+            RefreshPageAsync();
         });
 
         public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
