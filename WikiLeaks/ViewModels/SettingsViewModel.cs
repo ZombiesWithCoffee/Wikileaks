@@ -22,7 +22,7 @@ namespace WikiLeaks.ViewModels {
             Repository = Settings.Default.Repository;
             StartId = Settings.Default.StartId;
             EndId = Settings.Default.EndId;
-
+            WillHighlight = Settings.Default.WillHighlight;
             foreach (var term in Settings.Default.SearchTerms)
                 SearchTerms.Add(term);
         }
@@ -32,7 +32,7 @@ namespace WikiLeaks.ViewModels {
             Settings.Default.Repository = Repository;
             Settings.Default.StartId = StartId;
             Settings.Default.EndId = EndId;
-
+            Settings.Default.WillHighlight = WillHighlight;
             Settings.Default.SearchTerms = new StringCollection();
             foreach (var term in SearchTerms)
                 Settings.Default.SearchTerms.Add(term);
@@ -41,16 +41,6 @@ namespace WikiLeaks.ViewModels {
 
             CloseAction();
         });
-
-        public string Domain { get; set; }
-
-        public string Repository { get; set; }
-
-        public int StartId { get; set; }
-
-        public int EndId { get; set; }
-
-        public Action CloseAction { get; set; }
 
         public ICommand AddTerm => new RelayCommand(() => {
             if (string.IsNullOrEmpty(SearchTerm))
@@ -73,6 +63,18 @@ namespace WikiLeaks.ViewModels {
             foreach (var term in Settings.Default.DefaultTerms)
                 SearchTerms.Add(term);
         });
+
+        public string Domain { get; set; }
+
+        public string Repository { get; set; }
+
+        public bool WillHighlight { get; set; }
+
+        public int StartId { get; set; }
+
+        public int EndId { get; set; }
+
+        public Action CloseAction { get; set; }
 
         public ObservableCollection<string> SearchTerms { get; set; } = new ObservableCollection<string>();
 
