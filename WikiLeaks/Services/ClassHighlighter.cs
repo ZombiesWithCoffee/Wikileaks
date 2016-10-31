@@ -9,8 +9,6 @@ namespace WikiLeaks.Services {
     [Export(typeof(IHighlighter))]
     public class ClassHighlighter : IHighlighter{
 
-      
-
         public string HighlightSearchTerms(string text)
         {
             foreach (var term in Settings.Default.SearchTerms)

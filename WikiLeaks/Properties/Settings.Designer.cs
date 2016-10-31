@@ -190,5 +190,50 @@ namespace WikiLeaks.Properties {
                 this["ResultsFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>CVC</string>
+  <string>Clinton</string>
+  <string>Emergency</string>
+  <string>Foundation</string>
+  <string>HRC</string>
+  <string>Health</string>
+  <string>Hillary</string>
+  <string>KSA</string>
+  <string>Login</string>
+  <string>Mills</string>
+  <string>Obama</string>
+  <string>Pagliano</string>
+  <string>Password</string>
+  <string>Podesta</string>
+  <string>Potus</string>
+  <string>Qatar</string>
+  <string>Saudi</string>
+  <string>Soros</string>
+  <string>Striker</string>
+  <string>Turi</string>
+  <string>Urgent</string>
+  <string>Username</string>
+  <string>WJC</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection DefaultTerms {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["DefaultTerms"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection SearchTerms {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SearchTerms"]));
+            }
+            set {
+                this["SearchTerms"] = value;
+            }
+        }
     }
 }

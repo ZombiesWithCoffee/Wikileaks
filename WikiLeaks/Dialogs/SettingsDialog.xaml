@@ -4,14 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       	xmlns:viewModels="clr-namespace:WikiLeaks.ViewModels"
-      	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       	mc:Ignorable="d" 
         Title="Settings"
         WindowStartupLocation="CenterScreen"
         Height="537.712" 
         Width="919.64"
         FontSize="16"
-        d:DataContext ="{d:DesignInstance {x:Type viewModels:SettingsViewModel}, IsDesignTimeCreatable=True}"  
+        d:DataContext ="{d:DesignInstance {x:Type viewModels:SettingsViewModel}, IsDesignTimeCreatable=True}" 
+        ResizeMode="NoResize" 
+        Topmost="True"  
         >
 
     <Window.Resources>
@@ -21,7 +22,7 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="BorderBrush" Value="Black"/>
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontSize" Value="24" />
         </Style>
         <Style TargetType="Label">
             <Setter Property="FontWeight" Value="Bold" />
@@ -33,80 +34,92 @@
             <Setter Property="Margin" Value="5" />
             <Setter Property="Padding" Value="5" />
         </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="3" />
-        </Style>
         <Style TargetType="ComboBox">
             <Setter Property="Margin" Value="3" />
         </Style>
-        <Style TargetType="xctk:IntegerUpDown">
+        <Style TargetType="TextBox">
             <Setter Property="Margin" Value="3" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Width" Value="150" />
         </Style>
-
     </Window.Resources>
 
     <Border x:Name="Border" BorderThickness="3" CornerRadius="9" BorderBrush="Black" Margin="5" Padding="10" Background="AntiqueWhite">
         <Grid Margin="0">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-            <GroupBox Grid.Row="0" Grid.Column="0" Header="Email Source">
-                <Grid Margin="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="190" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Content="Domain:" Grid.Row="0" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Domain}" />
-                    <Label Content="Repository:" Grid.Row="1" Grid.Column="0" />
-                    <ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding Repository}" ItemsSource="{Binding Repositories}" SelectedValuePath="Key" DisplayMemberPath="Value" />
-                </Grid>
-            </GroupBox>
-            <GroupBox Grid.Row="1" Grid.Column="0" Header="Email Range">
-                <Grid Margin="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="190" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Content="Starting ID:" Grid.Row="0" />
-                    <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1"  Value="{Binding StartId}" Width="150" HorizontalAlignment="Left"/>
-                    <Label Content="Ending ID:" Grid.Row="1" Grid.Column="0" />
-                    <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1"  Value="{Binding EndId}" Width="150" HorizontalAlignment="Left"/>
-                </Grid>
-            </GroupBox>
-            <Grid Grid.Row="9" HorizontalAlignment="Right">
+
+
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="107*"/>
+                    <ColumnDefinition Width="185*"/>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Grid.Column="0" Header="Highlighted Words" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height=".6*"/>
+                        </Grid.RowDefinitions>
+
+                        <ListBox Grid.Row="0" ItemsSource="{Binding SearchTerms}" SelectedItem="{Binding SelectedSearchTerm}" IsSynchronizedWithCurrentItem="True" FontSize="14"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Text="{Binding SearchTerm}" Grid.Column="0" />
+                            <Button Content="Add" Command="{Binding AddTerm}" Grid.Column="1" FontSize="16" />
+                        </Grid>
+
+
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Reset" Command="{Binding ResetTerms}" Grid.Column="0" FontSize="16" />
+                            <Button Content="Delete" Command="{Binding RemoveTerm}" Grid.Column="1" FontSize="16" />
+                        </Grid>
+                        <Label Grid.Row="3" Content="**Warning: Search terms may break HTML formatting." FontSize="12" FontWeight="Normal" Margin="0,0,0,-10"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="0" Grid.Column="1" Header="Email Source" Height="156" VerticalAlignment="Top">
+                    <Grid Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="190" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Content="Domain:" Grid.Row="0" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Domain}" />
+                        <Label Content="Repository:" Grid.Row="1" Grid.Column="0" />
+                        <ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding Repository}" ItemsSource="{Binding Repositories}" SelectedValuePath="Key" DisplayMemberPath="Value" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Row="1" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <Button Content="Ok" IsDefault="True" Grid.Column="0" Command="{Binding SaveChanges}"/>
-                <Button Content="Cancel" IsCancel="True" Grid.Column="1"/>
+                <Button Content="Cancel" IsCancel="True" Grid.Column="1" />
             </Grid>
 
         </Grid>

@@ -44,5 +44,36 @@
     <Setting Name="ResultsFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="DefaultTerms" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;CVC&lt;/string&gt;
+  &lt;string&gt;Clinton&lt;/string&gt;
+  &lt;string&gt;Emergency&lt;/string&gt;
+  &lt;string&gt;Foundation&lt;/string&gt;
+  &lt;string&gt;HRC&lt;/string&gt;
+  &lt;string&gt;Health&lt;/string&gt;
+  &lt;string&gt;Hillary&lt;/string&gt;
+  &lt;string&gt;KSA&lt;/string&gt;
+  &lt;string&gt;Login&lt;/string&gt;
+  &lt;string&gt;Mills&lt;/string&gt;
+  &lt;string&gt;Obama&lt;/string&gt;
+  &lt;string&gt;Pagliano&lt;/string&gt;
+  &lt;string&gt;Password&lt;/string&gt;
+  &lt;string&gt;Podesta&lt;/string&gt;
+  &lt;string&gt;Potus&lt;/string&gt;
+  &lt;string&gt;Qatar&lt;/string&gt;
+  &lt;string&gt;Saudi&lt;/string&gt;
+  &lt;string&gt;Soros&lt;/string&gt;
+  &lt;string&gt;Striker&lt;/string&gt;
+  &lt;string&gt;Turi&lt;/string&gt;
+  &lt;string&gt;Urgent&lt;/string&gt;
+  &lt;string&gt;Username&lt;/string&gt;
+  &lt;string&gt;WJC&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="SearchTerms" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
 using System.Windows;
@@ -32,6 +31,7 @@ namespace WikiLeaks {
                 Settings.Default.SearchTerms = Settings.Default.DefaultTerms;
                 Settings.Default.Save();
             }
+
             try {
                 ComposeMef();
             }
