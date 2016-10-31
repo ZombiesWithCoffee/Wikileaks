@@ -60,15 +60,16 @@
                 <GroupBox Grid.Column="0" Header="Highlighted Words" >
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height=".45*"/>
                             <RowDefinition Height="6*"/>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height=".6*"/>
                         </Grid.RowDefinitions>
+                        <CheckBox Grid.Row="0" Content="Enable Highlighting" FontSize="14" IsChecked="{Binding WillHighlight}" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <ListBox Grid.Row="1" ItemsSource="{Binding SearchTerms}" SelectedItem="{Binding SelectedSearchTerm}" IsSynchronizedWithCurrentItem="True" FontSize="14"/>
 
-                        <ListBox Grid.Row="0" ItemsSource="{Binding SearchTerms}" SelectedItem="{Binding SelectedSearchTerm}" IsSynchronizedWithCurrentItem="True" FontSize="14"/>
-
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="1*"/>
@@ -80,7 +81,7 @@
 
 
 
-                        <Grid Grid.Row="2">
+                        <Grid Grid.Row="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
@@ -88,7 +89,7 @@
                             <Button Content="Reset" Command="{Binding ResetTerms}" Grid.Column="0" FontSize="16" />
                             <Button Content="Delete" Command="{Binding RemoveTerm}" Grid.Column="1" FontSize="16" />
                         </Grid>
-                        <Label Grid.Row="3" Content="**Warning: Search terms may break HTML formatting." FontSize="12" FontWeight="Normal" Margin="0,0,0,-10"/>
+                        <Label Grid.Row="4" Content="**Warning: Search terms may break HTML formatting." FontSize="12" FontWeight="Normal" Margin="0,0,0,-10"/>
                     </Grid>
                 </GroupBox>
 

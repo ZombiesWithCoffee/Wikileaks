@@ -235,5 +235,17 @@ namespace WikiLeaks.Properties {
                 this["SearchTerms"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool WillHighlight {
+            get {
+                return ((bool)(this["WillHighlight"]));
+            }
+            set {
+                this["WillHighlight"] = value;
+            }
+        }
     }
 }
