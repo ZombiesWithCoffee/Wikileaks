@@ -37,27 +37,7 @@
             </Style>
         </TabControl.Resources>
 
-        <TabItem Header="History">
-
-            <DataGrid ItemsSource="{Binding Documents}" 
-                        SelectionMode="Single" 
-                        SelectionUnit ="FullRow"   
-                        IsReadOnly="True"
-                        SelectedItem="{Binding Path=SelectedDocument, Mode=TwoWay}"
-                        AutoGenerateColumns="False" 
-                        AlternatingRowBackground="LightGray" 
-                        CanUserAddRows="False" 
-                        AlternationCount="2">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width="100" Header="Document #" Binding="{Binding DocumentId}" />
-                    <DataGridTextColumn Width="180" Header="Date" Binding="{Binding DateTime.LocalDateTime, StringFormat=dd-MMM-yyyy HH:mm tt}" />
-                    <DataGridTextColumn Width="200" Header="From" Binding="{Binding From}" />
-                    <DataGridTextColumn Width="*" Header="Subject" Binding="{Binding Subject}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-            
-        <TabItem Header="Formatted HTML">
+        <TabItem Header="Email">
 
             <DockPanel>
             <Grid DockPanel.Dock="Top">
@@ -157,6 +137,33 @@
             </Grid>
                 </DockPanel>
         </TabItem>
-            
+        
+        <TabItem Header="History">
+
+            <DataGrid ItemsSource="{Binding Documents}" 
+                        IsSynchronizedWithCurrentItem="True"
+                        SelectionMode="Single" 
+                        SelectionUnit ="FullRow"
+                        IsReadOnly="True"
+                        AutoGenerateColumns="False" 
+                        AlternatingRowBackground="LightGray" 
+                        CanUserAddRows="False" 
+                        AlternationCount="2">
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickCommand}" CommandParameter="{Binding Documents/}"/>
+                </DataGrid.InputBindings>
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="CornflowerBlue"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="100" Header="Document #" Binding="{Binding DocumentId}" />
+                    <DataGridTextColumn Width="180" Header="Date" Binding="{Binding DateTime.LocalDateTime, StringFormat=dd-MMM-yyyy HH:mm tt}" />
+                    <DataGridTextColumn Width="200" Header="From" Binding="{Binding From}" />
+                    <DataGridTextColumn Width="*" Header="Subject" Binding="{Binding Subject}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+
     </TabControl>
 </Window>

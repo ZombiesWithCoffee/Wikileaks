@@ -34,6 +34,7 @@ namespace WikiLeaks.ViewModels {
 
             Documents = _attachmentHistory.Initialize();
 
+      //      DownloadTimer();
             RaisePropertyChanged(nameof(Documents));
         }
 
@@ -47,7 +48,7 @@ namespace WikiLeaks.ViewModels {
                 DocumentNo++;
             };
 
-//            _timer.Start();
+            _timer.Start();
         }
 
         DispatcherTimer _timer;
@@ -59,26 +60,23 @@ namespace WikiLeaks.ViewModels {
 
         public List<Document> Documents { get; set; }
 
-        public Document SelectedDocument
+        public int TabIndex
         {
-            get { return _selectedDocument; }
-            set
-            {
-                Set(ref _selectedDocument, value);
-
-                DocumentNo = value.DocumentId;
-                TabIndex = 1;
-                RaisePropertyChanged(nameof(TabIndex));
-            }
+            get { return _tabIndex; }
+            set { Set(ref _tabIndex, value); }
         }
 
-        Document _selectedDocument;
-
-        public int TabIndex { get; set; }
+        int _tabIndex;
 
         public void Initialize(){
             DocumentNo = Settings.Default.DocumentNo;
         }
+
+        public ICommand DoubleClickCommand => new RelayCommand<Document>(document =>
+        {
+            DocumentNo = document.DocumentId;
+            TabIndex = 0;
+        });
 
         public ICommand NextCommand => new RelayCommand(() =>
         {
