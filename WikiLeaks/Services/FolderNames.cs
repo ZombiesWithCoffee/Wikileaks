@@ -33,5 +33,7 @@ namespace WikiLeaks.Services {
                 return path;
             }
         }
+
+        public string DatabaseFile => Path.Combine(CacheFolder, "Wikileaks.json");
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
@@ -24,15 +26,55 @@ namespace WikiLeaks.ViewModels {
         }
 
         [ImportingConstructor]
-        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter, IEmailCache emailCache){
+        public MainWindowViewModel(IEmailValidation emailValidation, IHighlighter highlighter, IEmailCache emailCache, IAttachmentHistory attachmentHistory){
             _emailValidation = emailValidation;
             _highlighter = highlighter;
             _emailCache = emailCache;
+            _attachmentHistory = attachmentHistory;
+
+            Documents = _attachmentHistory.Initialize();
+
+            RaisePropertyChanged(nameof(Documents));
         }
+
+        void DownloadTimer(){
+            
+            _timer = new DispatcherTimer{
+                Interval = new TimeSpan(1000)
+            };
+
+            _timer.Tick += (sender, args) => {
+                DocumentNo++;
+            };
+
+//            _timer.Start();
+        }
+
+        DispatcherTimer _timer;
 
         readonly IEmailValidation _emailValidation;
         readonly IEmailCache _emailCache;
         readonly IHighlighter _highlighter;
+        readonly IAttachmentHistory _attachmentHistory;
+
+        public List<Document> Documents { get; set; }
+
+        public Document SelectedDocument
+        {
+            get { return _selectedDocument; }
+            set
+            {
+                Set(ref _selectedDocument, value);
+
+                DocumentNo = value.DocumentId;
+                TabIndex = 1;
+                RaisePropertyChanged(nameof(TabIndex));
+            }
+        }
+
+        Document _selectedDocument;
+
+        public int TabIndex { get; set; }
 
         public void Initialize(){
             DocumentNo = Settings.Default.DocumentNo;
@@ -54,9 +96,12 @@ namespace WikiLeaks.ViewModels {
             await RefreshPageAsync();
         });
 
-        public ICommand HighlightCommand => new RelayCommand(async () => {
-            new HighlightDialog().ShowDialog();
+        public ICommand UpdateDatabaseCommand => new RelayCommand(async () =>{
+            Documents = await _attachmentHistory.RefreshAsync();
+        });
 
+        public ICommand HighlightCommand => new RelayCommand(async() => {
+            new HighlightDialog().ShowDialog();
             await RefreshPageAsync();
         });
 

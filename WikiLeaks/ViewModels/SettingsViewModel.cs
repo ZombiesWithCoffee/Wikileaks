@@ -36,7 +36,8 @@ namespace WikiLeaks.ViewModels {
         public Action CloseAction { get; set; }
 
         public Dictionary<string, string> Repositories => new Dictionary<string, string>{
-            {"podesta-emails",  "Podesta Emails"}
+            {"podesta-emails",  "Podesta Emails"},
+            {"dnc-emails", "DNC Emails" }
         };
     };
 }

@@ -28,118 +28,135 @@
         <converters:SignatureValidationToColorConverter x:Key="SignatureValidationToColorConverter" />
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="48" />
-        </Grid.RowDefinitions>
+    <TabControl Margin="5" Name="DocumentTabControl" SelectedIndex="{Binding TabIndex}">
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <TabControl.Resources>
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+        </TabControl.Resources>
 
-            <Grid.Resources>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="Padding" Value="3" />
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="FontSize" Value="14"/>
-                    <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-                </Style>
-            </Grid.Resources>
+        <TabItem Header="History">
 
-            <Label Content="From:" />
-            <TextBlock Text="{Binding From}" Grid.Row="0" Grid.Column="1" />
-            <Label Content="To:" Grid.Row="1" Grid.Column="0" />
-            <ScrollViewer Grid.Row="1" Grid.Column="1" MaxHeight="200">
-                <TextBlock Text="{Binding To}" />
-            </ScrollViewer>
-            <Label Content="CC:" Grid.Row="2" Grid.Column="0" />
-            <TextBlock Text="{Binding Cc}" Grid.Row="2" Grid.Column="1" />
-            <Label Content="Subject:" Grid.Row="3" Grid.Column="0" />
-            <TextBlock Text="{Binding Subject}" Grid.Row="3" Grid.Column="1" />
-            <Label Content="Date:" Grid.Row="4" Grid.Column="0" />
-            <TextBlock Text="{Binding Date}" Grid.Row="4" Grid.Column="1" />
-        </Grid>
+            <DataGrid ItemsSource="{Binding Documents}" 
+                        SelectionMode="Single" 
+                        SelectionUnit ="FullRow"   
+                        IsReadOnly="True"
+                        SelectedItem="{Binding Path=SelectedDocument, Mode=TwoWay}"
+                        AutoGenerateColumns="False" 
+                        AlternatingRowBackground="LightGray" 
+                        CanUserAddRows="False" 
+                        AlternationCount="2">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="100" Header="Document #" Binding="{Binding DocumentId}" />
+                    <DataGridTextColumn Width="180" Header="Date" Binding="{Binding DateTime.LocalDateTime, StringFormat=dd-MMM-yyyy HH:mm tt}" />
+                    <DataGridTextColumn Width="200" Header="From" Binding="{Binding From}" />
+                    <DataGridTextColumn Width="*" Header="Subject" Binding="{Binding Subject}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+            
+        <TabItem Header="Formatted HTML">
 
-        <TabControl Grid.Row="1" Margin="5">
+            <DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TabControl.Resources>
-                <Style TargetType="{x:Type TabItem}">
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="FontSize" Value="14"/>
-                </Style>
-            </TabControl.Resources>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Padding" Value="3" />
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                    </Style>
+                </Grid.Resources>
 
-            <TabItem Header="Formatted HTML">
-                <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
-            </TabItem>
-            <TabItem Header="Raw Text">
-                <ScrollViewer>
-                    <TextBlock Text="{Binding HtmlString}" FontWeight="Normal"/>
+                <Label Content="From:" />
+                <TextBlock Text="{Binding From}" Grid.Row="0" Grid.Column="1" />
+                <Label Content="To:" Grid.Row="1" Grid.Column="0" />
+                <ScrollViewer Grid.Row="1" Grid.Column="1" MaxHeight="200">
+                    <TextBlock Text="{Binding To}" />
                 </ScrollViewer>
-            </TabItem>
-        </TabControl>
+                <Label Content="CC:" Grid.Row="2" Grid.Column="0" />
+                <TextBlock Text="{Binding Cc}" Grid.Row="2" Grid.Column="1" />
+                <Label Content="Subject:" Grid.Row="3" Grid.Column="0" />
+                <TextBlock Text="{Binding Subject}" Grid.Row="3" Grid.Column="1" />
+                <Label Content="Date:" Grid.Row="4" Grid.Column="0" />
+                <TextBlock Text="{Binding Date}" Grid.Row="4" Grid.Column="1" />
+            </Grid>
 
-        <ListBox Grid.Row="2" ItemsSource="{Binding Attachments}" >
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <WebBrowser x:Name="WebBrowser" extensions1:WebBrowserBehaviors.Html="{Binding HtmlString}" LoadCompleted="WebBrowser_OnLoadCompleted" />
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Button Click="Attachment_Click">
-                        <Button.Content>
-                            <StackPanel>
-                                <Image Source="{Binding ImageSource}" MaxHeight="96" MaxWidth="250" ></Image>
-                                <Label Content="{Binding FileName}"></Label>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <ListBox Grid.Row="1" ItemsSource="{Binding Attachments}" >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
 
-        <Grid Grid.Row="3" Background="Azure" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="48"/>
-            </Grid.ColumnDefinitions>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="Attachment_Click">
+                                <Button.Content>
+                                    <StackPanel>
+                                        <Image Source="{Binding ImageSource}" MaxHeight="96" MaxWidth="250" ></Image>
+                                        <Label Content="{Binding FileName}"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-            <Grid.Resources>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Padding" Value="2" />
-                    <Setter Property="Margin" Value="2"/>
-                </Style>
-            </Grid.Resources>
+                <Grid Grid.Row="2" Background="Azure" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="48"/>
+                    </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
-            <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
-            <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
-            <Button Grid.Column="4" Content="{StaticResource Highlight}" Command="{Binding HighlightCommand}" />
-            <Button Grid.Column="5" Content="{StaticResource Settings}" Command="{Binding SettingsCommand}" />
-            <Button Grid.Column="6" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
-            <Button Grid.Column="7" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
-            <Button Grid.Column="8" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
-        </Grid>
-    </Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Padding" Value="2" />
+                            <Setter Property="Margin" Value="2"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <TextBox Grid.Column="0" Height="48" IsReadOnly="True" FontSize="18" Text="{Binding Mode=OneWay, Path=Url}" FontWeight="Bold" VerticalContentAlignment="Center" Background="{Binding SignatureValidation, Converter={StaticResource SignatureValidationToColorConverter}}" />
+                    <xctk:IntegerUpDown Grid.Column="2" FontSize="18" FontWeight="Bold" Value="{Binding DocumentNo}" Padding="2" Margin="2" />
+                    <Button Grid.Column="3" Content="{StaticResource Wikileaks}" Command="{Binding WikileaksCommand}" />
+                    <Button Grid.Column="4" Content="{StaticResource Highlight}" Command="{Binding HighlightCommand}" />
+                    <Button Grid.Column="5" Content="{StaticResource Settings}" Command="{Binding SettingsCommand}" />
+                    <Button Grid.Column="6" Content="{StaticResource Prev}" Command="{Binding PreviousCommand}" />
+                    <Button Grid.Column="7" Content="{StaticResource Refresh}" Command="{Binding RefreshCommand}" />
+                    <Button Grid.Column="8" Content="{StaticResource Next}" Command="{Binding NextCommand}" />
+                </Grid>
+            </Grid>
+                </DockPanel>
+        </TabItem>
+            
+    </TabControl>
 </Window>
