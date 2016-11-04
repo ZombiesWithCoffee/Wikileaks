@@ -146,9 +146,7 @@
                         SelectionUnit ="FullRow"
                         IsReadOnly="True"
                         AutoGenerateColumns="False" 
-                        AlternatingRowBackground="LightGray" 
-                        CanUserAddRows="False" 
-                        AlternationCount="2">
+                        CanUserAddRows="False">
                 <DataGrid.InputBindings>
                     <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickCommand}" CommandParameter="{Binding Documents/}"/>
                 </DataGrid.InputBindings>
@@ -162,6 +160,16 @@
                     <DataGridTextColumn Width="200" Header="From" Binding="{Binding From}" />
                     <DataGridTextColumn Width="*" Header="Subject" Binding="{Binding Subject}" />
                 </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="Event">
+                                <Setter Property="Background" Value="Red"></Setter>
+                                <Setter Property="Foreground" Value="White"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             </DataGrid>
         </TabItem>
 

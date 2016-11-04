@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MimeKit;
@@ -33,9 +36,20 @@ namespace WikiLeaks.ViewModels {
             _attachmentHistory = attachmentHistory;
 
             Documents = _attachmentHistory.Initialize();
+            
+            // CreateExcelFile();           
+            //      DownloadTimer();
+        }
 
-      //      DownloadTimer();
-            RaisePropertyChanged(nameof(Documents));
+        void CreateExcelFile(){
+            var branchesXml = Documents.Select(x => new XElement("document",
+                                        new XAttribute("id", x.DocumentId.GetValueOrDefault()),
+                                        new XAttribute("from", x.From ?? ""),
+                                        new XAttribute("subject", x.Subject ?? ""),
+                                        new XAttribute("datetime", x.DateTime)
+                                        ));
+            var bodyXml = new XElement("Documents", branchesXml);
+            File.WriteAllText(@"D:\Podesta.xml", bodyXml.ToString());
         }
 
         void DownloadTimer(){
@@ -72,9 +86,12 @@ namespace WikiLeaks.ViewModels {
             DocumentNo = Settings.Default.DocumentNo;
         }
 
-        public ICommand DoubleClickCommand => new RelayCommand<Document>(document =>
-        {
-            DocumentNo = document.DocumentId;
+        public ICommand DoubleClickCommand => new RelayCommand<Document>(document =>{
+
+            if (document?.DocumentId == null)
+                return;
+
+            DocumentNo = document.DocumentId.Value;
             TabIndex = 0;
         });
 
@@ -95,7 +112,7 @@ namespace WikiLeaks.ViewModels {
         });
 
         public ICommand UpdateDatabaseCommand => new RelayCommand(async () =>{
-            Documents = await _attachmentHistory.RefreshAsync();
+            await _attachmentHistory.RefreshAsync(Documents);
         });
 
         public ICommand HighlightCommand => new RelayCommand(async() => {
@@ -103,7 +120,10 @@ namespace WikiLeaks.ViewModels {
             await RefreshPageAsync();
         });
 
-        public ICommand RefreshCommand => new RelayCommand(async () => await RefreshPageAsync());
+        public ICommand RefreshCommand => new RelayCommand(async () =>{
+            _emailCache.Delete(DocumentNo);
+            await RefreshPageAsync();
+        });
 
         public ICommand WikileaksCommand => new RelayCommand(() =>
         {

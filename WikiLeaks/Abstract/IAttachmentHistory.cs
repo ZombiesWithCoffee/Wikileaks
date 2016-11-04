@@ -5,6 +5,6 @@ using WikiLeaks.Models;
 namespace WikiLeaks.Abstract {
     public interface IAttachmentHistory {
         List<Document> Initialize();
-        Task<List<Document>> RefreshAsync();
+        Task RefreshAsync(List<Document> documents);
     }
 }

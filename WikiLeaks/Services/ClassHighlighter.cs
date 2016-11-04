@@ -8,13 +8,12 @@ namespace WikiLeaks.Services {
     [Export(typeof(IHighlighter))]
     public class ClassHighlighter : IHighlighter{
 
-        public string HighlightSearchTerms(string text)
-        {
+        public string HighlightSearchTerms(string text){
+
             if (!Settings.Default.WillHighlight)
                 return text;
 
-            foreach (var term in Settings.Default.SearchTerms)
-            {
+            foreach (var term in Settings.Default.SearchTerms){
                 text = Regex.Replace(text, $@"(?:\b{term}\b)", HighlightName(term), RegexOptions.IgnoreCase);
             }
 

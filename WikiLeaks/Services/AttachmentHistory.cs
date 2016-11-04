@@ -37,33 +37,33 @@ namespace WikiLeaks.Services {
             }
         }
 
-        public async Task<List<Document>> RefreshAsync(){
+        public async Task RefreshAsync(List<Document> documents){
 
-            var documents = new List<Document>();
+            for (var documentNo = 1; documentNo <= 47725; documentNo++) {
 
-            for (var documentNo = 1; documentNo < 40000; documentNo++) {
+                try{
+                    var message = await _emailCache.GetMimeMessageAsync(documentNo);
 
-                var message = await _emailCache.GetMimeMessageAsync(documentNo);
+                    if (message == null)
+                        continue;
 
-                if (message == null)
+                    var document = new Document{
+                        DocumentId = documentNo,
+                        DateTime = message.Date,
+                        Subject = message.Subject,
+                        From = message.From.FirstOrDefault()?.Name
+                    };
+
+                    documents.Add(document);
+                }
+                catch{
                     continue;
-
-                var document = new Document
-                {
-                    DocumentId = documentNo,
-                    DateTime = message.Date,
-                    Subject = message.Subject,
-                    From = message.From.FirstOrDefault()?.Name
-                };
-
-                documents.Add(document);
+                }
             }
 
             var json = JsonConvert.SerializeObject(documents, Formatting.Indented);
 
             File.WriteAllText(_folderNames.DatabaseFile, json);
-
-            return documents;
         }
     }
 }

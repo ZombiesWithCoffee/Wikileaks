@@ -18,6 +18,15 @@ namespace WikiLeaks.Services {
         readonly IFolderNames _folderNames;
         readonly IEmailOnline _emailOnline;
 
+        public void Delete(int documentNo){
+
+            var fileName = GetFileName(documentNo);
+
+            if (File.Exists(fileName)){
+                File.Delete(fileName);
+            }
+        }
+
         public async Task<MimeMessage> GetMimeMessageAsync(int documentNo){
 
             var fileName = GetFileName(documentNo);
