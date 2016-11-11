@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -48,12 +49,20 @@ namespace WikiLeaks {
         void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e) {
             var webBrowser = sender as WebBrowser;
 
-            var document = webBrowser?.Document as HTMLDocument;
+            dynamic document = webBrowser?.Document as HTMLDocument;
 
             if (document == null)
                 return;
 
             CssStyle.Update(document);
+
+            if (document.readyState != "complete")
+                return;
+
+            dynamic script = document.createElement("script");
+            script.type = @"text/javascript";
+            script.text = @"window.onerror = function(msg,url,line){return true;}";
+            document.head.appendChild(script);
         }
     }
 }

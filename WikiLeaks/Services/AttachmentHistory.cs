@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -39,31 +40,36 @@ namespace WikiLeaks.Services {
 
         public async Task RefreshAsync(List<Document> documents){
 
-            for (var documentNo = 1; documentNo <= 47725; documentNo++) {
+            try{
+                for (var documentNo = 50888; documentNo <= 59258; documentNo++){
 
-                try{
-                    var message = await _emailCache.GetMimeMessageAsync(documentNo);
+                    try{
+                        var message = await _emailCache.GetMimeMessageAsync(documentNo);
 
-                    if (message == null)
+                        if (message == null)
+                            continue;
+
+                        var document = new Document{
+                            DocumentId = documentNo,
+                            DateTime = message.Date,
+                            Subject = message.Subject,
+                            From = message.From.FirstOrDefault()?.Name
+                        };
+
+                        documents.Add(document);
+                    }
+                    catch{
                         continue;
-
-                    var document = new Document{
-                        DocumentId = documentNo,
-                        DateTime = message.Date,
-                        Subject = message.Subject,
-                        From = message.From.FirstOrDefault()?.Name
-                    };
-
-                    documents.Add(document);
+                    }
                 }
-                catch{
-                    continue;
-                }
+
+                var json = JsonConvert.SerializeObject(documents, Formatting.Indented);
+
+                File.WriteAllText(_folderNames.DatabaseFile, json);
             }
-
-            var json = JsonConvert.SerializeObject(documents, Formatting.Indented);
-
-            File.WriteAllText(_folderNames.DatabaseFile, json);
+            catch (Exception ex){
+                return;
+            }
         }
     }
 }

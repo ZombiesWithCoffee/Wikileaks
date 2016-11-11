@@ -19,7 +19,12 @@ namespace WikiLeaks.Services {
                 using (var response = await client.GetAsync(new Uri(messageUrl))) {
                     var stream = await response.Content.ReadAsStreamAsync();
 
-                    return MimeMessage.Load(stream);
+                    var message = MimeMessage.Load(stream);
+
+                    if (message.TextBody != null && message.TextBody.Contains("<p>Bad request or the file you have requested does not exist.</p>"))
+                        return null;
+
+                    return message;
                 }
             }
         }
