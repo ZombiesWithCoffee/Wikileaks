@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Navigation;
 using mshtml;
 using WikiLeaks.Abstract;
@@ -37,7 +34,7 @@ namespace WikiLeaks {
             var button = sender as Button;
             var attachment = button?.DataContext as Attachment;
 
-            if (attachment == null)
+            if (attachment == null || string.IsNullOrEmpty(attachment.FileName))
                 return;
 
             var tempFileName = Path.Combine(Path.GetTempPath(), attachment.FileName);
